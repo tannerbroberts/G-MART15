@@ -2,7 +2,7 @@ const todosRouter = require('express').Router()
 const query = require('../mysql.conf.js')
 
 todosRouter.get('/todos', (_req, res) => {
-  // get the todos from the database
+  // get the todos from the todos schema in the todos table
   query('SELECT * FROM todos')
     .then((results) => {
       // Send the results back to the client
