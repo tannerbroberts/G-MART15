@@ -3,25 +3,20 @@ const express = require('express');
 
 // Muh Routes
 const redirectRouter = require('./routes/redirect');
-const usersRouter = require('./routes/users');
-const postDataRouter = require('./routes/postData.js');
-const todosRouter = require('./routes/todos');
+const giffyRouter = require('./routes/giffy.js');
 const app = express();
 
 // Muh Middlewares
 app.use(express.json());
 
 // All paths go to this handler
+// Eventually serves the app code for the Giffy app
 app.get('/', (_req, res) => res.send('Hello World!'));
 
-// Gets and prints data to the console
-app.use(postDataRouter);
+// Handles CRUD opperations for the Giffy app
+app.all('/giffy', giffyRouter);
 
-app.use(todosRouter);
-
-// Sends user data
-app.use(usersRouter);
-
+// Stops people form being idiots
 app.use(redirectRouter);
 
 app.listen(3000, () => console.log('Example app listening on port 3000!'));
