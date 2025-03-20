@@ -3,7 +3,7 @@ const giffyRouter = require('express').Router()
 
 // CRUD operations for the Users of the Giffy ap
 // Create
-giffyRouter.post('/giffy/register', async (req, res) => {
+giffyRouter.post('/register', async (req, res) => {
   try {
     res.json({ message: 'Giffy app CRUD operations POST' })
   } catch (err) {

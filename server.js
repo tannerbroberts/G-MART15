@@ -14,7 +14,7 @@ app.use(express.json());
 app.get('/', (_req, res) => res.send('Hello World!'));
 
 // Handles CRUD opperations for the Giffy app
-app.all('/giffy', giffyRouter);
+app.use('/giffy', giffyRouter);
 
 // Stops people form being idiots
 app.use(redirectRouter);
