@@ -62,6 +62,36 @@ giffyRouter.post('/register', async (req, res) => {
   }
 })
 
+// Read routes are giffyRouter.get...
+// Delete and Update routes are giffyRouter.post...
+// Test in postman
+// Test in the browser
+// Make sure your SQL server is running
+// Make sure your SQL schema matches process.env.DB_DATABASE
+// Create the schema and tables using MySqlWorkbench
 
+// Ryan's Assignment:
+// Read the user's favorites
+
+// Maggie's assignment:
+// Add a single favorite to the user's favorites
+
+// Ali's assignment:
+// Delete the user's favorites
+
+// Extra credit:
+// Delete the user's account
+
+// Extra credit:
+// Log out
+
+// Extra credit:
+// delete a single favorite from the user's favorites
+
+// Extra credit:
+// Delete a batch of favorites from the user's favorites
+
+// Extra credit:
+// Add a batch of favorites to the user's favorites
 
 module.exports = giffyRouter
