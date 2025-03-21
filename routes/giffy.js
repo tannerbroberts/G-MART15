@@ -1,7 +1,7 @@
 const query = require('../mysql.conf.js')
 const giffyRouter = require('express').Router()
 const bcrypt = require("bcryptjs");
-const saltRounds = 1;
+const saltRounds = 100;
 
 const loggedInUsers = new Map(); // Store logged-in users in memory
 
