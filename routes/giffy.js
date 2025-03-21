@@ -22,20 +22,20 @@ giffyRouter.post('/register', async (req, res) => {
   try {
     // 1. Get the data from the request body
     const { username, password } = req.body;
-    
+
     // 2 Check if the data is valid
     if (!username || !password) {
       return res.status(400).json({ message: 'Username and password are required' })
     }
-    
+
     // 3. Check if the user already exists
     const user = await query ('SELECT * FROM users WHERE username= ?', [username])
-    
+
     // 4. Send a failure response if the user already exists
     if (user.length > 0) {
       return res.status(400).json({ message: 'User already exists' })
     }
-    
+
     // 5. Hash the password
     const hash = bcrypt.hashSync(password, saltRounds);
 
@@ -61,7 +61,6 @@ giffyRouter.post('/register', async (req, res) => {
     res.status(500).send('Server error')
   }
 })
-
 // Read routes are giffyRouter.get...
 // Delete and Update routes are giffyRouter.post...
 // Test in postman
@@ -71,6 +70,7 @@ giffyRouter.post('/register', async (req, res) => {
 // Create the schema and tables using MySqlWorkbench
 
 // Ryan's Assignment:
+// Not create branches that exist like that name ever again, who let him create that name?
 // Read the user's favorites
 
 // Maggie's assignment:
