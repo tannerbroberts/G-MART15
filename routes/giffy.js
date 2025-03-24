@@ -75,7 +75,17 @@ giffyRouter.post('/register', async (req, res) => {
 
 // Maggie's assignment:
 // Add a single favorite to the user's favorites
-
+const addFavorite = async (userId, itemId) => {
+  try{
+    const [result] = await pool.query(
+      'INSERT INTO favorites (user_id, item_id) VALUES (?, ?)',
+      [userId, itemId]
+    );
+    return result.insertId;
+  } catch (err) {
+      console.error('error adding to favorites');
+  }
+}
 // Ali's assignment:
 // Delete the user's favorites
 
