@@ -72,7 +72,7 @@ giffyRouter.post('/register', async (req, res) => {
 // Ryan's Assignment:
 // Not create branches that exist like that name ever again, who let him create that name?
 // Read the user's favorites
-router.get('/favorites', async (req, res) => {
+giffyRouter.get('/favorites', async (req, res) => {
   try {
     const userId = 1;
 
