@@ -1,6 +1,11 @@
 const query = require('../mysql.conf.js')
 const giffyRouter = require('express').Router()
 const bcrypt = require("bcryptjs");
+
+// Login stuff
+const passport = require("passport");
+const LocalStrategy = require("passport-local").Strategy;
+
 const saltRounds = 100;
 
 const loggedInUsers = new Map(); // Store logged-in users in memory
@@ -93,19 +98,19 @@ giffyRouter.get('/favorites', async (req, res) => {
 // Ali's assignment:
 // Delete the user's favorites
 
-// Extra credit:
+// Ali credit:
 // Delete the user's account
 
-// Extra credit:
+// Ryan credit:
 // Log out
 
-// Extra credit:
+// Georgia credit:
 // delete a single favorite from the user's favorites
 
-// Extra credit:
+// Georgia credit:
 // Delete a batch of favorites from the user's favorites
 
-// Extra credit:
+// Maggie credit:
 // Add a batch of favorites to the user's favorites
 
 module.exports = giffyRouter
