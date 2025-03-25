@@ -77,7 +77,21 @@ giffyRouter.post('/register', async (req, res) => {
 // Ryan's Assignment:
 // Not create branches that exist like that name ever again, who let him create that name?
 // Read the user's favorites
+giffyRouter.get('/favorites', async (req, res) => {
+  try {
+    const userId = 1;
 
+    const favorites = await query(
+      'SELECT * FROM user_favorites WHERE user_id = ?',
+      [userId]
+    );
+
+    res.json(favorites);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to retrieve favorites' });
+  }
+});
 // Maggie's assignment:
 // Add a single favorite to the user's favorites
 const query = require('../mysql.conf.js')
