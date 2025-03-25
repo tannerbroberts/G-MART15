@@ -66,23 +66,67 @@ giffyRouter.post('/register', async (req, res) => {
 // Ryan's Assignment:
 // Not create branches that exist like that name ever again, who let him create that name?
 // Read the user's favorites
-// giffyRouter.get('/favorites', async (req, res) => {
-//   try {
-//     const userId = 1;
+giffyRouter.get('/favorites', async (req, res) => {
+  try {
+    const userId = 1;
 
-//     const favorites = await query(
-//       'SELECT * FROM user_favorites WHERE user_id = ?',
-//       [userId]
-//     );
+    const favorites = await query(
+      'SELECT * FROM user_favorites WHERE user_id = ?',
+      [userId]
+    );
 
-//     res.json(favorites);
-//   } catch (err) {
-//     console.error(err);
-//     res.status(500).json({ error: 'Failed to retrieve favorites' });
-//   }
-// });
+    res.json(favorites);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to retrieve favorites' });
+  }
+});
+
 // Maggie's assignment:
 // Add a single favorite to the user's favorites
+giffyRouter.post('/addFavorite', async (req, res) => {
+  try {
+    const { userId, itemId } = req.body;
+    const result = await query(
+      'INSERT INTO favorites (user_id, item_id) VALUES (?, ?)',
+      [userId, itemId]
+    );
+    if (result.affectedRows === 1) {
+      console.log("Added to Favorites");
+      res.status(201).json({ message: "Added to Favorites" });
+    } else {
+      console.log("Error adding to Favorites");
+      res.status(400).json({ message: "Error adding to Favorites" });
+    }
+  } catch (err) {
+    console.error("Error adding to Favorites:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+// Maggie credit:
+// Add a batch of favorites to the user's favorites
+giffyRouter.post('/addBatchFavorites', async (req, res) => {
+  try {
+    const { userId, itemIds } = req.body;
+    const values = itemIds.map(itemId => [userId, itemId]);
+    const result = await query(
+      'INSERT INTO favorites (user_id, item_id) VALUES ?',
+      [values]
+    );
+
+    if (result.affectedRows === itemIds.length) {
+      console.log("Added batch to Favorites");
+      res.status(201).json({ message: "Added batch to Favorites" });
+    } else {
+      console.log("Error adding batch to Favorites");
+      res.status(400).json({ message: "Error adding batch to Favorites" });
+    }
+  } catch (err) {
+    console.error("Error adding batch to Favorites:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
 
 // Ali's assignment:
 // Delete the user's favorites
