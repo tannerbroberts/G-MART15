@@ -142,7 +142,6 @@ giffyRouter.post('/logout', (req, res) => {
       return res.status(400).json({message: 'No token provided'});
     }
     const tokenNum = parseInt(token);
-    console.log(tokenNum)
     if (loggedInUsers.has(tokenNum)) {
       loggedInUsers.delete(tokenNum);
       res.json({ message: 'Logged out successfully'});
