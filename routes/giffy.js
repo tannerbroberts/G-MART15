@@ -36,7 +36,6 @@ giffyRouter.post('/register', async (req, res) => {
     // 6. Generate a token
     const randomInt = Math.floor(Math.random() * 1_000_000_000_000);
     loggedInUsers.set(randomInt, { username, timestamp: Date.now() });
-    console.log("we got here", randomInt, loggedInUsers)
     // 7. Insert the new user into the database
     const responseToInsertion = await query('INSERT INTO users (username, password) VALUES (?, ?)',[username, password]);
 
