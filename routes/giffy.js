@@ -284,16 +284,8 @@ giffyRouter.post('/delBatchFavorites', async (req, res) => {
   }
 });
 
-<<<<<<< Updated upstream
-
-
-
-// Maggie credit:
-// Add a batch of favorites to the user's favorites
-=======
 function makeToken() {
   return Math.floor(Math.random() * 1_000_000_000_000);
 }
->>>>>>> Stashed changes
 
 module.exports = giffyRouter
