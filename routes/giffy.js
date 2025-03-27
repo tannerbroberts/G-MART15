@@ -10,10 +10,6 @@ const saltRounds = 10;
 
 const loggedInUsers = new Map(); // Store logged-in users in memory
 loggedInUsers.set(7, { username: 'testuser', timestamp: Date.now() });
-<<<<<<< Updated upstream
-// CRUD operations for the Users of the Giffy app
-// Create
-=======
 
 /**
  * giffy/login (post)
@@ -75,7 +71,6 @@ giffyRouter.post('/logout', (req, res) => {
   }
 });
 
->>>>>>> Stashed changes
 giffyRouter.post('/register', async (req, res) => {
   try {
     // 1. Get the data from the request body
