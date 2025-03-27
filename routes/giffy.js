@@ -155,9 +155,53 @@ giffyRouter.post('/logout', (req, res) => {
 });
 // Georgia credit:
 // delete a single favorite from the user's favorites
+giffyRouter.post('/delFavorite', async (req, res) => {
+  try {
+    const { userId, itemId } = req.body;
+    const result = await query(
+      'DELETE FROM favorites (user_id, item_id) VALUES (?, ?)',
+      [userId, itemId]
+    );
+    if (result.affectedRows === 1) {
+      console.log("Removed from Favorites");
+      res.status(201).json({ message: "Removed from Favorites" });
+    } else {
+      console.log("Error removing from Favorites");
+      res.status(400).json({ message: "Error removing from Favorites" });
+    }
+  } catch (err) {
+    console.error("Error removing from Favorites:", err);
+    res.status(500).json({ message: "Server error" });
+  }
 
+})
 // Georgia credit:
 // Delete a batch of favorites from the user's favorites
+
+giffyRouter.post('/delBatchFavorites', async (req, res) => {
+  try {
+    const { userId, itemIds } = req.body;
+    const values = itemIds.map(itemId => [userId, itemId]);
+    const result = await query(
+      'DELETE FROM favorites (user_id, item_id) VALUES ?',
+      [values]
+    );
+
+    if (result.affectedRows === itemIds.length) {
+      console.log("Removed batch from Favorites");
+      res.status(201).json({ message: "Removed batch from Favorites" });
+    } else {
+      console.log("Error removing batch from Favorites");
+      res.status(400).json({ message: "Error removing batch from Favorites" });
+    }
+  } catch (err) {
+    console.error("Error removing batch from Favorites:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+
+
 
 // Maggie credit:
 // Add a batch of favorites to the user's favorites
