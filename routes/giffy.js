@@ -129,6 +129,30 @@ giffyRouter.post('/addBatchFavorites', async (req, res) => {
 
 // Ali's assignment:
 // Delete the user's favorites
+giffyRouter.delete('/favorites/user/:userId', async (req, res) => {
+  const { userId } = req.params;
+
+  try {
+    const result = await query(
+      'DELETE FROM favorites WHERE user_id = ?', 
+      [userId]
+    );
+    console.log(`Deleted ${result.affectedRows} favorites for userId: ${userId}`);
+
+    res.status(200).json({ 
+      message: 'All user favorites successfully deleted',
+      deletedCount: result.affectedRows 
+    });
+
+  } catch (error) {
+    console.error('Error deleting user favorites:', error);
+    res.status(500).json({ 
+      error: 'Internal server error',
+      details: error.message 
+    });
+  }
+});
+
 
 // Ali credit:
 // Delete the user's account
