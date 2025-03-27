@@ -85,10 +85,10 @@ giffyRouter.get('/favorites', async (req, res) => {
 // Add a single favorite to the user's favorites
 giffyRouter.post('/addFavorite', async (req, res) => {
   try {
-    const { userId, itemId } = req.body;
+    const { userId, gifUrl } = req.body;
     const result = await query(
-      'INSERT INTO favorites (user_id, item_id) VALUES (?, ?)',
-      [userId, itemId]
+      'INSERT INTO favorites (user_id, gif_url) VALUES (?, ?)',
+      [userId, gifUrl]
     );
     if (result.affectedRows === 1) {
       console.log("Added to Favorites");
@@ -107,14 +107,14 @@ giffyRouter.post('/addFavorite', async (req, res) => {
 // Add a batch of favorites to the user's favorites
 giffyRouter.post('/addBatchFavorites', async (req, res) => {
   try {
-    const { userId, itemIds } = req.body;
-    const values = itemIds.map(itemId => [userId, itemId]);
+    const { userId, gifUrls } = req.body;
+    const values = gifUrls.map(gifUrl => [userId, gifUrl]);
     const result = await query(
-      'INSERT INTO favorites (user_id, item_id) VALUES ?',
+      'INSERT INTO favorites (user_id, gif_url) VALUES ?',
       [values]
     );
 
-    if (result.affectedRows === itemIds.length) {
+    if (result.affectedRows === gifUrls.length) {
       console.log("Added batch to Favorites");
       res.status(201).json({ message: "Added batch to Favorites" });
     } else {
