@@ -10,8 +10,72 @@ const saltRounds = 10;
 
 const loggedInUsers = new Map(); // Store logged-in users in memory
 loggedInUsers.set(7, { username: 'testuser', timestamp: Date.now() });
+<<<<<<< Updated upstream
 // CRUD operations for the Users of the Giffy app
 // Create
+=======
+
+/**
+ * giffy/login (post)
+ * giffy/logout (post)
+ * giffy/register (post)
+ * giffy/deleteAccount (delete)
+ * giffy/favorites (get)
+ * giffy/favorites (post)
+ * giffy/favorites (delete)
+ */
+
+giffyRouter.post('/login', async (req, res) => {
+
+  const { username, password } = req.body;
+
+  if (!username || !password) {
+    return res.status(400).json({ message: 'Username and password are required for login' });
+  }
+
+  const user = await query('SELECT * FROM users WHERE username = ?', [username]);
+  
+  if (user.length === 0) {
+    return res.status(401).json({ message: 'No account found with that username' });
+  }
+
+  const { password: hashedPassword } = user[0];
+
+  const isPasswordValid = bcrypt.compareSync(password, userData.password);
+  if (!isPasswordValid) {
+    return res.status(401).json({ message: 'Invalid password' });
+  }
+
+  // Generate a token
+  makeToken();
+
+  loggedInUsers.set(randomInt, { username, timestamp: Date.now() });
+  res.status(200).json({
+    message: 'Login successful',
+    token: randomInt,
+  });
+});
+
+giffyRouter.post('/logout', (req, res) => {
+  try {
+    const token = req.headers.authorization;
+    if (!token) {
+      return res.status(400).json({message: 'No token provided'});
+    }
+    const tokenNum = parseInt(token);
+    if (loggedInUsers.has(tokenNum)) {
+      loggedInUsers.delete(tokenNum);
+      res.json({ message: 'Logged out successfully'});
+    } else {
+      res.status(404).json({message: 'User not found, or already logged out'});
+    }
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({message: 'Logout failed'});
+  }
+});
+
+>>>>>>> Stashed changes
 giffyRouter.post('/register', async (req, res) => {
   try {
     // 1. Get the data from the request body
@@ -34,7 +98,7 @@ giffyRouter.post('/register', async (req, res) => {
     const hash = bcrypt.hashSync(password, saltRounds);
 
     // 6. Generate a token
-    const randomInt = Math.floor(Math.random() * 1_000_000_000_000);
+    makeToken();
     loggedInUsers.set(randomInt, { username, timestamp: Date.now() });
     // 7. Insert the new user into the database
     const responseToInsertion = await query('INSERT INTO users (username, password) VALUES (?, ?)',[username, password]);
@@ -225,10 +289,16 @@ giffyRouter.post('/delBatchFavorites', async (req, res) => {
   }
 });
 
+<<<<<<< Updated upstream
 
 
 
 // Maggie credit:
 // Add a batch of favorites to the user's favorites
+=======
+function makeToken() {
+  return Math.floor(Math.random() * 1_000_000_000_000);
+}
+>>>>>>> Stashed changes
 
 module.exports = giffyRouter
