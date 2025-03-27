@@ -85,10 +85,10 @@ giffyRouter.get('/favorites', async (req, res) => {
 // Add a single favorite to the user's favorites
 giffyRouter.post('/addFavorite', async (req, res) => {
   try {
-    const { userId, itemId } = req.body;
+    const { userId, gifUrl } = req.body;
     const result = await query(
-      'INSERT INTO favorites (user_id, item_id) VALUES (?, ?)',
-      [userId, itemId]
+      'INSERT INTO favorites (user_id, gif_url) VALUES (?, ?)',
+      [userId, gifUrl]
     );
     if (result.affectedRows === 1) {
       console.log("Added to Favorites");
@@ -107,14 +107,14 @@ giffyRouter.post('/addFavorite', async (req, res) => {
 // Add a batch of favorites to the user's favorites
 giffyRouter.post('/addBatchFavorites', async (req, res) => {
   try {
-    const { userId, itemIds } = req.body;
-    const values = itemIds.map(itemId => [userId, itemId]);
+    const { userId, gifUrls } = req.body;
+    const values = gifUrls.map(gifUrl => [userId, gifUrl]);
     const result = await query(
-      'INSERT INTO favorites (user_id, item_id) VALUES ?',
+      'INSERT INTO favorites (user_id, gif_url) VALUES ?',
       [values]
     );
 
-    if (result.affectedRows === itemIds.length) {
+    if (result.affectedRows === gifUrls.length) {
       console.log("Added batch to Favorites");
       res.status(201).json({ message: "Added batch to Favorites" });
     } else {
@@ -157,17 +157,18 @@ giffyRouter.post('/logout', (req, res) => {
 // delete a single favorite from the user's favorites
 giffyRouter.post('/delFavorite', async (req, res) => {
   try {
-    const { userId, itemId } = req.body;
+    const { userId, gifUrl } = req.body;
     const result = await query(
-      'DELETE FROM favorites (user_id, item_id) VALUES (?, ?)',
-      [userId, itemId]
+      'DELETE FROM favorites WHERE user_id = ? AND gif_url = ?',
+      [userId, gifUrl]
     );
     if (result.affectedRows === 1) {
-      console.log("Removed from Favorites");
-      res.status(201).json({ message: "Removed from Favorites" });
+      console.log(`Deleted, userId:${userId}, gifUrl:${gifUrl}`);
+      res.status(200).send();
     } else {
       console.log("Error removing from Favorites");
-      res.status(400).json({ message: "Error removing from Favorites" });
+      console.log(result)
+      res.status(409).json({ message: "Error removing from Favorites" });
     }
   } catch (err) {
     console.error("Error removing from Favorites:", err);
@@ -180,19 +181,19 @@ giffyRouter.post('/delFavorite', async (req, res) => {
 
 giffyRouter.post('/delBatchFavorites', async (req, res) => {
   try {
-    const { userId, itemIds } = req.body;
-    const values = itemIds.map(itemId => [userId, itemId]);
+    const { userId, gifUrls } = req.body;
+    const values = gifUrls.map(gifUrl => [userId, gifUrl]);
     const result = await query(
-      'DELETE FROM favorites (user_id, item_id) VALUES ?',
+      'DELETE FROM favorites (user_id, gif_url) VALUES ?',
       [values]
     );
 
-    if (result.affectedRows === itemIds.length) {
+    if (result.affectedRows === gifUrls.length) {
       console.log("Removed batch from Favorites");
-      res.status(201).json({ message: "Removed batch from Favorites" });
+      res.status(200).json({ message: "Removed batch from Favorites" });
     } else {
       console.log("Error removing batch from Favorites");
-      res.status(400).json({ message: "Error removing batch from Favorites" });
+      res.status(409).json({ message: "Error removing batch from Favorites" });
     }
   } catch (err) {
     console.error("Error removing batch from Favorites:", err);
