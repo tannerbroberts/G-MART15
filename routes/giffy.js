@@ -11,15 +11,6 @@ const saltRounds = 10;
 const loggedInUsers = new Map(); // Store logged-in users in memory
 loggedInUsers.set(7, { username: 'testuser', timestamp: Date.now() });
 
-/**
- * giffy/login (post)
- * giffy/logout (post)
- * giffy/register (post)
- * giffy/deleteAccount (delete)
- * giffy/favorites (get)
- * giffy/favorites (post)
- * giffy/favorites (delete)
- */
 
 giffyRouter.post('/login', async (req, res) => {
 
@@ -37,18 +28,21 @@ giffyRouter.post('/login', async (req, res) => {
 
   const { password: hashedPassword } = user[0];
 
-  const isPasswordValid = bcrypt.compareSync(password, userData.password);
+  // TODO: Actually hash the password, and compare it
+
+  console.log({password, hashedPassword});
+  const isPasswordValid = password === hashedPassword;
   if (!isPasswordValid) {
     return res.status(401).json({ message: 'Invalid password' });
   }
 
   // Generate a token
-  makeToken();
+  const token = makeToken();
 
-  loggedInUsers.set(randomInt, { username, timestamp: Date.now() });
+  loggedInUsers.set(token, { username, timestamp: Date.now() });
   res.status(200).json({
     message: 'Login successful',
-    token: randomInt,
+    token,
   });
 });
 
@@ -59,6 +53,7 @@ giffyRouter.post('/logout', (req, res) => {
       return res.status(400).json({message: 'No token provided'});
     }
     const tokenNum = parseInt(token);
+    console.log('tokenNum', tokenNum, loggedInUsers);
     if (loggedInUsers.has(tokenNum)) {
       loggedInUsers.delete(tokenNum);
       res.json({ message: 'Logged out successfully'});
@@ -72,6 +67,8 @@ giffyRouter.post('/logout', (req, res) => {
 });
 
 giffyRouter.post('/register', async (req, res) => {
+
+  // TODO: Hash the password
   try {
     // 1. Get the data from the request body
     const { username, password } = req.body;
