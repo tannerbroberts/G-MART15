@@ -25,7 +25,7 @@ app.listen(3000, () => console.log('Example app listening on port 3000!'));
  * Story 1: Vite:
  *   - Estimate: 5, 10, 11: / 3 = 8:40 hour estimate
  *   - Assignee: Ryan
- *   - Start time: Today, April 7th, 2025, 6:15 PM
+ *   - Start time: April 7th, 2025, 6:15 PM
  *   - Create a vite app with react and typescript and SWC
  *   - The vite app should be able to compile typescript code and place it in the /dist folder, ready to be served by the express server.
  *   - The "start" command, after setting this up, should run both the vite dev server (compiling the typescript code) and this express server on two different ports.
@@ -36,7 +36,7 @@ app.listen(3000, () => console.log('Example app listening on port 3000!'));
  * Story 2: Backend, table creation:
  *   - Estimate: 8, 9, 10: 27 / 3 = 9 hour estimate
  *   - Assignee: Ali
- *   - Start time: Today, April 7th, 2025, 7:00 PM
+ *   - Start time: April 7th, 2025, 7:00 PM
  *   - Create a sharable MySQL schema (can send to everybody and used quickly to create the needed database)
  *   - Help everybody set up their local MySQL database
  *   - Create the following tables, and decide on an appropriate data type for each column:
@@ -57,7 +57,7 @@ app.listen(3000, () => console.log('Example app listening on port 3000!'));
  * Story 3 (spike): Determine game rules
  *   - Estimate: 4, 5, 6: 15 / 3 = 5 hour estimate
  *   - Assignee: Georgia
- *   - Start time: Today, April 7th, 2025, 7:00 PM
+ *   - Start time: April 7th, 2025, 7:00 PM
  *   - Own and propose a single set of game rules, for which the assignee will be held responsible in terms of future specifications (tell us how the game works, and what the benefits are)
  *   - The rules should be easy to extend on (balatro, as an example)
  *   - The rules should be easy to implement
@@ -88,6 +88,8 @@ app.listen(3000, () => console.log('Example app listening on port 3000!'));
 /**
  * Story 4 (spike and play, backend only): Implementation for "login with google"
  *   - Estimate: 8, 10, 10, 19: 47 / 4: 11:45 hour estimate
+ *   - Assignee: Tanner
+ *   - Start time: April 7th, 2025, 8:00 PM
  *   - What is required for logging in with google email?
  *   - Testing with postman should yield a successful login response while running the express server
  */
