@@ -23,7 +23,7 @@ app.listen(3000, () => console.log('Example app listening on port 3000!'));
 
 /**
  * Story 1: Vite:
- *   - Estimate: 5, 10, 72: 87 / 3 = 29 hour estimate
+ *   - Estimate: 5, 10, 11: / 3 = 8:40 hour estimate
  *   - Assignee: Ryan
  *   - Start time: Today, April 7th, 2025, 6:15 PM
  *   - Create a vite app with react and typescript and SWC
@@ -59,6 +59,9 @@ app.listen(3000, () => console.log('Example app listening on port 3000!'));
  *   - Assignee: Georgia
  *   - Start time: Today, April 7th, 2025, 7:00 PM
  *   - Own and propose a single set of game rules, for which the assignee will be held responsible in terms of future specifications (tell us how the game works, and what the benefits are)
+ *   - The rules should be easy to extend on (balatro, as an example)
+ *   - The rules should be easy to implement
+ *   - The rules should be generous in terms of counting cards, but not so generous as to be unreasonable or unrealistic
  *   - What are the game rules?
  *   - What are the rules for the dealer?
  *   - What are the rules for the player?
@@ -83,9 +86,10 @@ app.listen(3000, () => console.log('Example app listening on port 3000!'));
  */
 
 /**
- * Story 4 (spike):
- *   - Estimate: 
+ * Story 4 (spike and play, backend only): Implementation for "login with google"
+ *   - Estimate: 8, 10, 10, 19: 47 / 4: 11:45 hour estimate
  *   - What is required for logging in with google email?
+ *   - Testing with postman should yield a successful login response while running the express server
  */
 
 /**
