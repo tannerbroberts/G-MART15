@@ -45,6 +45,8 @@ giffyRouter.post('/logout', (req, res) => {
 });
 
 giffyRouter.post('/register', async (req, res) => {
+
+  // TODO: Hash the password
   try {
     // 1. Get the data from the request body
     const { username, password } = req.body;
@@ -66,7 +68,7 @@ giffyRouter.post('/register', async (req, res) => {
     const hash = bcrypt.hashSync(password, saltRounds);
 
     // 6. Generate a token
-    const randomInt = Math.floor(Math.random() * 1_000_000_000_000);
+    makeToken();
     loggedInUsers.set(randomInt, { username, timestamp: Date.now() });
     // 7. Insert the new user into the database
     const responseToInsertion = await query('INSERT INTO users (username, password) VALUES (?, ?)',[username, password]);
@@ -150,5 +152,9 @@ giffyRouter.delete('/favorites', async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 });
+
+function makeToken() {
+  return Math.floor(Math.random() * 1_000_000_000_000);
+}
 
 module.exports = giffyRouter
