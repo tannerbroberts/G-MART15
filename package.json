@@ -1,27 +1,17 @@
 {
    "scripts": {
       "client:dev": "cd client && npm run dev",
-    "client:build": "cd client && npm run build",
-    "server:dev": "cd server && npx ts-node src/index.ts",
-    "server:build": "cd server && tsc",
-    "start": "concurrently \"npm run client:dev\" \"npm run server:dev\"",
-    "build": "npm run client:build && npm run server:build",
-    "serve": "cd server && node dist/index.js"
+      "client:build": "cd client && npm run build",
+      "server:dev": "cd server && npx ts-node src/index.ts",
+      "server:build": "cd server && tsc",
+      "start": "concurrently \"npm run client:dev\" \"npm run server:dev\"",
+      "build": "npm run client:build && npm run server:build",
+      "serve": "cd server && node dist/index.js"
    },
    "keywords": [],
    "author": "",
    "license": "ISC",
-   "dependencies": {
-      "bcryptjs": "^3.0.2",
-      "dotenv": "^16.4.7",
-      "express": "^4.21.2",
-      "mysql2": "^3.13.0",
-      "passport": "^0.7.0",
-      "passport-local": "^1.0.0"
-   },
    "devDependencies": {
-      "nodemon": "^3.1.9",
-      "concurrently": "^8.2.0"
+      "concurrently": "^9.1.2"
    }
-
 }
