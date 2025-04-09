@@ -1,4 +1,4 @@
-const query = require('../mysql.conf.js')
+const query = require('../../../mysql.conf.js')
 const giffyRouter = require('express').Router()
 const bcrypt = require("bcryptjs");
 
