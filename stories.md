@@ -106,7 +106,63 @@ and to the extent that these rules ARE used, the assignee must be able to explai
   - { x: number, y: number }
 - Image asset placeholder for the back of a card
 - Image assets for suits and numbers
-- Figure out how to play a sound in React, and play a shuffle sound as well as a "card-dealt" sound
 - Build out the "Hand" component, but give it a better name, cuz calling something hand is just dumb, a "Hand" is just two cards
 - Card needs to have a large size and a small size
 - Card position needs to be animated when it changes, likely just a transition property on css, but may be more complex
+
+# Story 7: Music and ambiance
+- Estimate: 10, 12, 15, 18, 24: 19:30
+- Assignee: Georgia
+- Figure out how to play a sound in React, (useSound hook)
+- Button click/tap sounds
+- Shuffle
+- Card dealt
+- Ambiance
+- Win
+- Loss
+- Push
+- Insurance?
+- Toggle buttons for settings
+- Opening overlays
+- Closing overlays
+- New player joins
+- Player disconnect
+- Bankrupcy
+- Make using sounds STUPIDLY easy, develop some sort of custom hook if you like, see Tanner for further knowledge if desired.
+- People need to be able to easily understand how to trigger a sound effect, and reliably trigger it.
+- Sound effects should be able to overlap eachother
+
+
+# Story 8: Server routes for login
+- Estimate:
+- Assignee:
+- post/login
+  - log in with google? I don't actually know how that'll work
+- post/login/newAccount/start
+  - Checks to see if the email isn't already in use, sends an email to the user
+  - Puts the email into the users table with a "pending" flag or something
+- post/login/newAccount/verify
+  - The email sent to the user contains a 6 character key
+  - The user coppies the key into the login screen and clicks a button
+  - or when the last character is entered, the request is sent
+  - Successful verrification moves the user to the screen where they select their username
+- post/login/newAccount/checkUser
+  - The input auto-sends a request when typing stops for 1000 ms
+  - body has the user's desired name, response contains weather that name is taken
+- post/login/newAccount/create
+
+# Avatar Component and multiplayer layout options
+  - Specify where the players will be in each of the different 1, 2, 3, 4, 5, 6 player game layouts
+# Table assets
+# Chips/Tokens/Coins/Dollars
+# Buttons and the layout for hit, stay, stand, etc.
+- Needs a usability focus here, maybe even mock up a series of potential game steps and make sure the location of the button still feels right
+# What does creating a table look like?
+# What does joining a table look like? (I'd love to use QR code generators and query params/route variables)
+
+# User first time viral hook journey:
+  - Friend pulls up the QR code for their table, or sends a link through chat
+    - QR code gets scanned, and the link clicked
+    - The chat link is clicked
+  - The user creates an account/logs in
+  - The user immediately joins the table
