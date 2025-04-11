@@ -1,35 +1,30 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React, { useState } from 'react';
+import './App.css';
+import Card from './components/Card';
+import cardBackImage from './images/cardback.png';
+import cardFrontImage from './images/cardFront.png';
 
-function App() {
-  const [count, setCount] = useState(0)
+const App: React.FC = () => {
+  const [location] = useState<{ x: number; y: number }>({ x: 100, y: 200 });
+  const [size] = useState<'large' | 'small'>('large');
+  const [isFlipped, setIsFlipped] = useState(false);
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <div className="app">
+      <div
+        onClick={() => setIsFlipped(!isFlipped)}
+        style={{ cursor: 'pointer' }}
+      >
+        <Card
+          size={size}
+          location={location}
+          cardBackImage={cardBackImage}
+          cardFrontImage={cardFrontImage}
+          isFlipped={isFlipped}
+        />
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+    </div>
+  );
+};
 
-export default App
+export default App;
