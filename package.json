@@ -1,5 +1,6 @@
 {
    "scripts": {
+      "tannersays": "npm install && cd client && npm install && cd ../server && npm install",
       "client:dev": "cd client && npm run dev",
       "client:build": "cd client && npm run build",
       "server:dev": "cd server && npx ts-node src/index.ts",
