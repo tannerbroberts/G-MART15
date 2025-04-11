@@ -132,8 +132,28 @@ and to the extent that these rules ARE used, the assignee must be able to explai
 - People need to be able to easily understand how to trigger a sound effect, and reliably trigger it.
 - Sound effects should be able to overlap eachother
 
+# Story 8: Login screen & Main Menu screen
+- Estimate: 12, 12, 13, 15, 15 / 5 = 13:12
+- Assignee: Maggie
+- Login/Create new account
+  - Render the Login with Google button in the center vertically and horizontally
+  - Welcome text and title
+- Main Menu:
+  - New game button
+  - Join game button
+    - Enter a gameId
+    - Implement a scan a QR code library or sahmthing (if on mobile)
+- Create username
+  - Just a text input for now... I guess... I mean, I don't know.
 
-# Story 8: Server routes for login
+
+
+
+
+
+# Backlog of thoughts and things
+
+# Server routes for login
 - Estimate:
 - Assignee:
 - post/login
@@ -159,6 +179,12 @@ and to the extent that these rules ARE used, the assignee must be able to explai
 - Needs a usability focus here, maybe even mock up a series of potential game steps and make sure the location of the button still feels right
 # What does creating a table look like?
 # What does joining a table look like? (I'd love to use QR code generators and query params/route variables)
+# Table (gameplay) screen
+# Stats screen
+# Settings screen
+# QR code generator
+# Setup the SQL server in production
+# Setup the game server in production
 
 # User first time viral hook journey:
   - Friend pulls up the QR code for their table, or sends a link through chat
