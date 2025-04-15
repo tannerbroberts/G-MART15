@@ -171,6 +171,17 @@ and to the extent that these rules ARE used, the assignee must be able to explai
   - body has the user's desired name, response contains weather that name is taken
 - post/login/newAccount/create
 
+# DEPLOY!!!
+- Host the client on something like Vercel, cheap, ideally free, maybe even github pages!
+- Host the express server somewhere cheap with low latency
+  - Ideally, hook it up to a github pull request pipeline
+  - Options include but are not limited to Tanner's Heroku pet server
+- Host the SQL server
+  - Setup the admin privledges (you can do anything, even drop a bomb on the tables, and blow them up, super scary)
+  - Setup the user credentials that the express server will be using to access the mysql server
+  - Be able to user the admin account somehow, ssh commandline, whatever, just need admin access
+- Write the connection code that hooks up the express server to the MySQL server
+
 # Avatar Component and multiplayer layout options
   - Specify where the players will be in each of the different 1, 2, 3, 4, 5, 6 player game layouts
 # Table assets
