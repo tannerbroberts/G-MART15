@@ -1,13 +1,14 @@
+body{
+  width: 100%;
+}
 #root {
-  max-width: 1280px;
+  width: 100%;
   margin: 0 auto;
-  padding: 2rem;
   text-align: center;
 }
 
 .logo {
   height: 6em;
-  padding: 1.5em;
   will-change: filter;
   transition: filter 300ms;
 }
@@ -34,9 +35,15 @@
 }
 
 .card {
-  padding: 2em;
 }
 
 .read-the-docs {
   color: #888;
+}
+.app-container {
+  background-color: #68A65E;
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }

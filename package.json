@@ -6,7 +6,8 @@
       "server:build": "cd server && tsc",
       "start": "concurrently \"npm run client:dev\" \"npm run server:dev\"",
       "build": "npm run client:build && npm run server:build",
-      "serve": "cd server && node dist/index.js"
+      "serve": "cd server && node dist/index.js",
+      "MaggieSays": "npm install && cd client && npm install && cd ../server && npm install"
    },
    "keywords": [],
    "author": "",
