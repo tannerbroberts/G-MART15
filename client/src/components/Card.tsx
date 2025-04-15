@@ -9,7 +9,7 @@ interface CardProps {
   isFlipped: boolean;
 }
 
-const Card: React.FC<CardProps> = ({ size, location, cardBackImage, cardFrontImage }) => {
+const Card: React.FC<CardProps> = ({ size, location, cardBackImage, cardFrontImage, isFlipped }) => {
   return (
     <div
       className={`card ${size}`}
@@ -18,12 +18,12 @@ const Card: React.FC<CardProps> = ({ size, location, cardBackImage, cardFrontIma
         transition: 'transform 0.3s ease-in-out',
       }}
     >
-      <div className="card-back">
+      {isFlipped ? <div className="card-back">
         <img src={cardBackImage} alt="Card back" />
-      </div>
+      </div>:
       <div className="card-front">
         <img src={cardFrontImage} alt="Card front" />
-      </div>
+      </div>}
     </div>
   );
 };

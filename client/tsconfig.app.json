@@ -5,7 +5,6 @@
     "useDefineForClassFields": true,
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
     "module": "ESNext",
-     "moduleResolution": "NodeNext",
     "jsx": "react-jsx",
     "skipLibCheck": true,
 
@@ -15,7 +14,7 @@
     "isolatedModules": true,
     "moduleDetection": "force",
     "noEmit": true,
-    "jsx": "react-jsx",
+
 
     /* Linting */
     "strict": true,
