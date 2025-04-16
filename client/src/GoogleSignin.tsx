@@ -1,4 +1,11 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
+
+// Extend the Window interface to include the gapi property
+declare global {
+  interface Window {
+    gapi: any;
+  }
+}
 
 export default function GoogleSignin() {
   useEffect(() => {
@@ -30,7 +37,17 @@ export default function GoogleSignin() {
   }, []);
 
   // Callback function for successful sign-in
-  const onSignIn = (googleUser) => {
+  interface GoogleUser {
+    getBasicProfile: () => GoogleUserProfile;
+  }
+
+  interface GoogleUserProfile {
+    getId: () => string;
+    getName: () => string;
+    getEmail: () => string;
+  }
+
+  const onSignIn = (googleUser: GoogleUser) => {
     const profile = googleUser.getBasicProfile();
     console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
     console.log('Name: ' + profile.getName());
