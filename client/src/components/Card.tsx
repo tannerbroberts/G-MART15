@@ -7,23 +7,33 @@ interface CardProps {
   cardBackImage: string;
   cardFrontImage: string;
   isFlipped: boolean;
+  onClick?: () => void;
 }
 
-const Card: React.FC<CardProps> = ({ size, location, cardBackImage, cardFrontImage, isFlipped }) => {
+const Card: React.FC<CardProps> = ({
+  size,
+  location,
+  cardBackImage,
+  cardFrontImage,
+  isFlipped,
+  onClick,
+}) => {
   return (
     <div
-      className={`card ${size}`}
+      className={`card ${size} ${isFlipped ? 'flipped' : ''}`}
       style={{
         transform: `translate(${location.x}px, ${location.y}px)`,
-        transition: 'transform 0.3s ease-in-out',
       }}
+      onClick={onClick}
     >
-      {isFlipped ? <div className="card-back">
-        <img src={cardBackImage} alt="Card back" />
-      </div>:
-      <div className="card-front">
-        <img src={cardFrontImage} alt="Card front" />
-      </div>}
+      <div className="card-inner">
+        <div className="card-front">
+          <img src={cardFrontImage} alt="Card front" />
+        </div>
+        <div className="card-back">
+          <img src={cardBackImage} alt="Card back" />
+        </div>
+      </div>
     </div>
   );
 };
