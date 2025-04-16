@@ -45,25 +45,24 @@ const App: React.FC = () => {
 
   return (
     <div className='appcontainer'>
-    <LoginPage />
-
-    <div className="card-table">
-      {cards.map(card => (
-        <div
-          key={card.id}
-          onClick={() => handleCardClick(card.id)}
-          style={{ cursor: 'pointer', position: 'absolute', left: card.location.x, top: card.location.y }}
-        >
-          <Card
-            size={card.size}
-            location={{ x: 0, y: 0 }} // Already positioned by parent div
-            cardBackImage={card.cardBackImage}
-            cardFrontImage={card.cardFrontImage}
-            isFlipped={card.isFlipped}
-          />
-        </div>
-      ))}
-    </div>
+      <div className="card-table">
+        <LoginPage />
+        {cards.map(card => (
+          <div
+            key={card.id}
+            onClick={() => handleCardClick(card.id)}
+            style={{ cursor: 'pointer', position: 'absolute', left: card.location.x, top: card.location.y }}
+          >
+            <Card
+              size={card.size}
+              location={{ x: 0, y: 0 }} // Already positioned by parent div
+              cardBackImage={card.cardBackImage}
+              cardFrontImage={card.cardFrontImage}
+              isFlipped={card.isFlipped}
+            />
+          </div>
+        ))}
+      </div>
     </div>
   );
 };

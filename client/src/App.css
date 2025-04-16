@@ -50,6 +50,16 @@
   object-fit: cover;
 }
 
+.small {
+  width: 200px;
+  height: 300px;
+}
+
+.large {
+  width: 500px;
+  height: 600px;
+}
+
 .card-pair {
   display: flex;
   gap: 20px;
