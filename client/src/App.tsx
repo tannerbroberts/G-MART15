@@ -83,7 +83,9 @@ const App: React.FC = () => {
     <div className='appcontainer'>
       <div className="card-table">
         <LoginPage />
-        <CardSelector />
+        <div style={{ position: 'absolute', top: 24, right: 24, zIndex: 10 }}>
+          <CardSelector />
+        </div>
         {cards.map(card => (
           <div
             key={card.id}

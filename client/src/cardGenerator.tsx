@@ -65,7 +65,8 @@ function generateCardSVG(suit: Suit, value: Value): string {
     // Define pip positions based on value
     switch(numValue) {
       case 1: // Ace
-        pipPositions = [[40, 60, 2]]; // [x, y, scale]
+        // Only render a large suit in the center, and 'A' in the upper left and lower right
+        pipPositions = [];
         break;
       case 2:
         pipPositions = [[40, 30, 1.5], [40, 90, 1.5]];
@@ -98,6 +99,16 @@ function generateCardSVG(suit: Suit, value: Value): string {
   }
   
   // Create SVG string with appropriate styling
+  if (value === 'A') {
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 120" width="80" height="120">
+      <rect width="80" height="120" rx="10" ry="10" fill="white" stroke="black" stroke-width="1"/>
+      <text x="5" y="20" font-family="Arial, sans-serif" font-size="18" fill="${color}" font-weight="bold">A</text>
+      <text x="75" y="120" font-family="Arial, sans-serif" font-size="18" fill="${color}" font-weight="bold" text-anchor="end" transform="rotate(180 75 120)">A</text>
+      <path d="${suitPath}" fill="${color}" transform="translate(20,40) scale(4)"/>
+    </svg>`;
+    return svg;
+  }
+
   let svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 120" width="80" height="120">
   <!-- Card base with rounded corners -->
   <rect width="80" height="120" rx="10" ry="10" fill="white" stroke="black" stroke-width="1"/>
