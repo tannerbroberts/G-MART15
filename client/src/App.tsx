@@ -3,7 +3,7 @@ import './App.css';
 import Card from './components/Card';
 import cardBackImage from './images/cardback.png';
 import cardFrontImage from './images/cardFront.png';
-
+import LoginPage from './LoginPage';
 type CardData = {
   id: string;
   location: { x: number; y: number };
@@ -44,6 +44,9 @@ const App: React.FC = () => {
   };
 
   return (
+    <div className='appcontainer'>
+    <LoginPage />
+
     <div className="card-table">
       {cards.map(card => (
         <div
@@ -60,6 +63,7 @@ const App: React.FC = () => {
           />
         </div>
       ))}
+    </div>
     </div>
   );
 };

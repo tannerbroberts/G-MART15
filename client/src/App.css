@@ -58,3 +58,10 @@
   left: 50%;
   transform: translateX(-50%);
 }
+.app-container {
+  background-color: #68A65E;
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
