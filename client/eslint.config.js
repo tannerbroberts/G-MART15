@@ -16,6 +16,7 @@ export default tseslint.config(
     plugins: {
       'react-hooks': reactHooks,
       'react-refresh': reactRefresh,
+      'max-lines-30': require('./eslint-rules/max-lines-30'),
     },
     rules: {
       ...reactHooks.configs.recommended.rules,
@@ -23,6 +24,7 @@ export default tseslint.config(
         'warn',
         { allowConstantExport: true },
       ],
+      'max-lines-30/max-lines-30': 'error',
     },
   },
 )
