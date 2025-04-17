@@ -1,0 +1,57 @@
+  .appcontainer {
+      background-color: #68A65E;
+      min-height: 100vh;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+  }
+
+  .textboxcontainer {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 0;
+      width: 100vw;
+  }
+  input {
+    height: 40px;
+    width: 50%;
+  }
+
+  button {
+      height: 60px;
+      width: auto;
+      font-size: 20px;/*this needs changed, how can i make it one line of text on both mobile and desktop?*/
+      border: 3px solid black;
+      border-radius: 25px;
+      background-color: white;
+      color: black;
+      margin-left: 20px;    
+  }
+
+  button:hover {
+      background-color: lightgray;
+      color: black;
+      border: 3px solid black;
+  }
+
+  .fannedcardsimage {
+      width: 500px;
+      max-width: 90vw;
+      display: block;
+  }
+
+  .formFormattingWrapper {
+    height: 50vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+  }
+  form{
+    width: 100%;
+  }
