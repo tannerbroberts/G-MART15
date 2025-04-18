@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
 import './loginpage.css';
 import fannedcards from './fannedcards.png';
 
+import './LoginPage.css';
 
 const LoginPage = () => {
     return (
