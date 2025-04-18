@@ -1,8 +1,11 @@
+import './loginpage.css';
+import fannedcards from './fannedcards.png';
+
 import './LoginPage.css';
 
 const LoginPage = () => {
     return (
-      <div className="container">
+      <>
               <div className="textcontainer">
         <p>G-MART PRESENTS</p>
         <h1>BLACKJACK</h1>
@@ -10,7 +13,8 @@ const LoginPage = () => {
         <button className="loginbutton" onClick={() => { /* google login code */ }}>
             Log In With Google
         </button>
-      </div>
+        <img src={fannedcards} alt="Image of fanned out cards" className="fannedcardsimage" />
+      </>
     );
   };
 

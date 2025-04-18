@@ -1,55 +1,73 @@
-.appcontainer{
+.appcontainer {
   background-color: #68A65E;
   min-height: 100vh;
   margin: 0;
 }
 
-.container {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    margin: 0;
-  }
-  
-  .loginbutton {
-    height: 100px;
-    width: 40%;
-    padding: 12px 24px;
-    font-size: 20px; /*this needs changed, how can i make it one line of text on both mobile and desktop?*/
-    border: 5px solid black;
-    border-radius: 25px;
-    background-color: white;
-    color: black;
-  }
-  
-  .loginbutton:hover {
-    background-color: lightgray;
-    color: black;
-    border: 5px solid black;
-  }
+.loginbutton {
+  height: 100px;
+  width: 40%;
+  padding: 5px 15px;
+  font-size: 20px; /*this needs changed, how can i make it one line of text on both mobile and desktop?*/
+  border: 5px solid black;
+  border-radius: 25px;
+  background-color: white;
+  color: black;
+}
 
-  /* Remove default browser spacing */
-html, body {
+.loginbutton:hover {
+  background-color: lightgray;
+  color: black;
+  border: 5px solid black;
+}
+
+/* Remove default browser spacing */
+html,
+body {
   margin: 0;
   padding: 0;
   height: 100%;
 }
 
-/* Ensure root element fills viewport */
+/* Ensure root element fills viewport*/
 #root {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
 }
 
-.textcontainer{
+
+.textcontainer {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   text-align: center;
-  margin-bottom: 50px;
+  margin-bottom: 10px;
   color: black;
+}
+
+.menubutton {
+  height: 100px;
+  width: 40%;
+  padding: 5px 15px;
+  margin-bottom: 15px;
+  font-size: 20px; /*this needs changed, how can i make it one line of text on both mobile and desktop?*/
+  border: 5px solid black;
+  border-radius: 25px;
+  background-color: white;
+  color: black;
+}
+
+.menubutton:hover {
+  background-color: lightgray;
+  color: black;
+  border: 5px solid black;
+}
+
+.fannedcardsimage {
+  margin-top: 10px;
+  left: 50%;
+  bottom: 0px;
+  width: 500px;
 }
