@@ -159,7 +159,43 @@ and to the extent that these rules ARE used, the assignee must be able to explai
   - Be able to user the admin account somehow, ssh commandline, whatever, just need admin access
 - Write the connection code that hooks up the express server to the MySQL server (5 connection pool limit)
 
+# Story 10 Main Menu Meat
+Main Menu Screen: Core Elements  
+- Welcome/Header
+- Display a welcoming message and the logged-in user’s username (the one that they chose after creating an account)
+- Prominently show the user's total winnings and other basic stats
+	- Games played
+- New Game Section
+- Join/Create game text box: User enters a desired tableID (max 20 characters).
+- Button: join/create
+- On submit, attempts to create a table with that ID.
+	- Send a request to create a table
+		- Response should have success or failure
+			- Connect to the table socket connection with the response (don't do this on the main menu, just FYI)
+- If tableID is too long, redirect to error page: "Your table ID is too long".
+- If the user has created 3 tables in the last minute, set a state value for countdown (should be exposed in a countdown context) and show the countdown page for as long as the countdown exists, also show a back button so the user can immediately join a table that already exists.
+	- This is just FYI, the main menu page only needs to handle setting state when a rate limiting response is given
+- Select from one of three public games
+- Search bar to filter the public games list
+- Button: "Join Table", disabled if no public table is selected, enabled if one is selected from the list.
+- On submit, attempts to join the table.
+- If tableID is too long, redirect to error page.
+- If table is full, show a "table full" error page, and a back button.
+- If table does not exist, create it and join.
+- Menu navigation to settings page (sound controls, persistent across sessions).
+- Loading Indicators for components that rely on fetched state
+- Show loading spinners or progress bars during network requests (e.g., when creating/joining a table).
+- Logout
+- Button: "Logout" (optional, but standard for Google-authenticated apps).
 
+Key Behaviors  
+
+- TableID Validation: Any tableID input longer than 20 characters sends user to an error page.
+- Rate Limiting: If user tries to create more than 3 tables/minute, redirect to countdown page.
+- Table Full Handling: If a join is attempted on a full table (6 players), show an error.
+- Loading States: Always show a loading indicator while waiting for server responses.
+- Persistent Settings: Sound settings are saved and loaded on each login.
+- Public tables list
 
 
 
@@ -204,3 +240,31 @@ and to the extent that these rules ARE used, the assignee must be able to explai
     - The chat link is clicked
   - The user creates an account/logs in
   - The user immediately joins the table
+
+  # AI Prompt:
+  Im a brand new developer.
+
+We want to build a multiplayer blackjack game for the web and we want it to be mobile first.
+ We will use react, and express server for the backend.
+ Navigation between screens will use react router, send react app from the basepath of the URL, client side app state will be managed with some context, backend will maintain SQL server of game tables, decks, players, etc.
+ Unique tableID will be user defined, tableIDs and game sessions will be stored in SQL database, if multiple people enter the same tableID, then they will all join the same table, unless the table is full then we will need to tell them the table is full.
+ if a user joins a non-existant table, the table is created for them.
+ join requests will be first-come first-serve.
+ There is no validation for table passwords or the like.
+ Anyone can join any table as long as they know the table name.
+ there can be no more than 6 players at a table.
+ If users disconnect, then they forfit any money bet.
+ Any money won will be added to the payers total, no need to cash out.
+ Users will need to log in with Google, and an account using email address will be made in the database.
+ Users will be identified by a username that they choose, no more than 20 characters long, filtered for inappropriate names.
+ Settings page will have sound control.
+ Settings will be persistent across sessions.
+ Don't be opinionated about client look and feel.
+ tableID must be less than 20 characters, invalid tableID will take you to an error page that says "your table ID is too long" or the like.
+ yes we will show loading indicators during network req.
+ Games will be multiplayer, dealer will deal cards to each user in the order they joined the table.
+ Each player decision will be listened for, but only one players decision will be made at a time.
+ If players make a decision when it is not their turn, the server will ignore them.
+ Game state will be synchronized between clients by socket server streams and route updates.
+ If a user disconnects and socket server stops receiving responses to pings sent every second, then the user will be automatically removed from the table.
+ We will prevent abuse by using google login, and if a user creates more than 3 tables in a minute it will be rate limited, attempting to create a 4th table within 60 seconds will redirect to a countdown page where they will be notified when they can create another table.
