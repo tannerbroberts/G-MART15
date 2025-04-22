@@ -197,6 +197,68 @@ Key Behaviors
 - Persistent Settings: Sound settings are saved and loaded on each login.
 - Public tables list
 
+# Story 11 Smoke Break / Game hasn't started yet lobby
+
+Frontend-
+*Buttons
+- User that created the table initially gets a start button
+	- Once the game has started, people just take "smoke breaks"
+- Rejoin after hand (Sit Down)
+- Share link (gives an invite to the game link, probably just a few lines of code as the link popping up after clicking)
+- Exit lobby (Leaves the game, returns you to main menu)
+*Visual differences
+- This is just the table, but in the middle is the QR code, possibly replacing player hand?  
+- A grey tint over the screen, or a vague smoke effect (depending on difficulty of implementation)
+- QR code is on screen  
+
+- Connects to main menu through exit lobby button
+
+Backend Features for Smoke Break (Spectator) Mode  
+1. Player State Management 
+- Maintain a player status flag per seat:
+- `active` (playing hand)
+- `smoke_break` (temporarily inactive, spectator mode)
+- `pending_game_start`
+- When a player initiates a smoke break, update their status to `smoke_break`.
+- Prevent game actions from `smoke_break` players but keep them connected.
+
+1. Connection & Heartbeat Handling
+- Establish a socket connection.
+- Implement heartbeat pings to all connected clients.
+	- Server sends a "ping" twice a second
+	- Client listens for a "ping" and sends a "pong" in response
+	- Server removes a user if they miss sending a "pong" 3 times in a row.
+- For players on smoke break:
+- - Respond to heartbeat pings normally to avoid being kicked from the table
+    - Maintain their reserved seat during the break.
+
+1. Seat Reservation System
+- While on smoke break, the player’s seat remains reserved.
+- Other players cannot take that seat.
+- When the player returns (clicks "Rejoin after hand"), update status back to `active`.
+	- they will wait for the current hand to be over and be dealt the next hand
+
+4. Game State Synchronization  
+
+- Broadcast game state updates to all connected clients, including those on smoke break via socket connection.
+- Ensure smoke break players receive all card deals and table updates in real time.
+- Hide or disable UI elements related to player actions for smoke break players.
+
+5. Invitation & QR Code Link Generation  
+
+- Generate a QR code based off of the full URL path (including the tableId path variable)
+- This URL is nothing special, if a user tries to join a table that's full, they won't be able to, no big deal.
+
+6. Rejoin & Cash Out Handling  
+
+- Rejoin after hand: When a player clicks this, verify their seat and change status to `active`.
+- Cash out: Remove player from table, free seat, and update game state accordingly.
+
+7. Security & Anti-Abuse  
+
+- Validate all status changes and socket messages server-side.
+- Prevent spoofing by authenticating players on every action.
+
 
 
 # Backlog of thoughts and things
