@@ -1,6 +1,5 @@
 {
    "scripts": {
-      "tannersays": "npm install && cd client && npm install && cd ../server && npm install",
       "client:dev": "cd client && npm run dev",
       "client:build": "cd client && npm run build",
       "server:dev": "cd server && npm run dev",
@@ -9,7 +8,8 @@
       "build": "npm run client:build && npm run server:build",
       "server:build": "cd server && npm run build",
       "serve": "cd server && node dist/index.js",
-      "db:setup": "node ./scripts/setup-database.js"
+      "db:setup": "node ./scripts/setup-database.js",
+      "MaggieSays": "npm install && cd client && npm install && cd ../server && npm install"
    },
    "keywords": [],
    "author": "",
