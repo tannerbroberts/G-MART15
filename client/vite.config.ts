@@ -1,6 +1,5 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react-swc'
-import { resolve } from 'path'
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -24,23 +23,15 @@ export default defineConfig({
       }
     }
   },
-  define: {
-    // Fix for the crypto.getRandomValues error
-    'process.env': {},
-    'global': {}
-  },
-  optimizeDeps: {
-    esbuildOptions: {
-      // Node.js global to browser globalThis
-      define: {
-        global: 'globalThis'
-      }
-    }
-  },
+  // Vite 6.x requires explicit Node.js polyfilling
   resolve: {
     alias: {
-      // These are the polyfills needed for Node.js core modules
-      crypto: 'crypto-browserify'
+      // This is needed because some dependencies expect Buffer to be available
+      buffer: 'buffer/',
     }
+  },
+  define: {
+    // This is needed for Vite to properly polyfill Node.js globals
+    'global': 'globalThis',
   }
 })
