@@ -10,8 +10,13 @@ export default function GoogleSignin({ onLoginSuccess }: GoogleSigninProps) {
 
   const handleGoogleLogin = () => {
     setIsLoading(true);
+    // Get the base URL of the current environment
+    const apiUrl = process.env.NODE_ENV === 'production' 
+      ? '' // In production, use relative URLs (they'll go to same domain)
+      : 'http://localhost:3000'; // In dev, point to the Express server
+      
     // Redirect to the Google OAuth route on our server
-    window.location.href = '/auth/google';
+    window.location.href = `${apiUrl}/auth/google`;
   };
 
   return (

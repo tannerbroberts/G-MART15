@@ -1,9 +1,0 @@
-{
-  "buildCommand": "npm run build",
-  "outputDirectory": "dist",
-  "framework": "vite",
-  "rewrites": [
-    { "source": "/api/(.*)", "destination": "https://g-mart15-blackjack-api.herokuapp.com/api/$1" },
-    { "source": "/auth/(.*)", "destination": "https://g-mart15-blackjack-api.herokuapp.com/auth/$1" }
-  ]
-}

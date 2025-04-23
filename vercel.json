@@ -1,0 +1,9 @@
+{
+  "buildCommand": "cd client && npm run build",
+  "outputDirectory": "dist",
+  "framework": "vite",
+  "rewrites": [
+    { "source": "/api/(.*)", "destination": "https://gmart15-blackjack-express-1946fea61846.herokuapp.com/api/$1" },
+    { "source": "/auth/(.*)", "destination": "https://gmart15-blackjack-express-1946fea61846.herokuapp.com/auth/$1" }
+  ]
+}
