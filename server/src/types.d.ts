@@ -14,13 +14,5 @@ declare global {
   }
 }
 
-// Module declarations for JS files
-declare module './utils/db' {
-  import { Pool } from 'pg';
-  
-  export const query: (text: string, params?: any[]) => Promise<any>;
-  export const initDb: () => Promise<void>;
-  
-  const pool: Pool;
-  export default pool;
-}
+// We don't need to declare the db module here since we're using actual TypeScript
+// implementation with proper exports

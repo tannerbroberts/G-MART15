@@ -1,31 +1,31 @@
-const passport = require('passport');
-const GoogleStrategy = require('passport-google-oauth20').Strategy;
-const jwt = require('jsonwebtoken');
-const knex = require('./db');
+import passport from 'passport';
+import { Router } from 'express';
+import dotenv from 'dotenv';
+import path from 'path';
 
-passport.use(
-  new GoogleStrategy(
-    {
-      clientID: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: 'https://blackjack-backend.herokuapp.com/auth/google/callback',
-    },
-    async (accessToken, refreshToken, profile, done) => {
-      try {
-        let user = await knex('users').where('google_id', profile.id).first();
-        if (!user) {
-          user = await knex('users').insert({
-            google_id: profile.id,
-            email: profile.emails[0].value,
-            name: profile.displayName,
-          }).returning('*').then(rows => rows[0]);
-        }
-        done(null, user);
-      } catch (err) {
-        done(err);
-      }
-    }
-  )
+// Create an express router
+const router = Router();
+
+// Load environment variables from project root .env file
+dotenv.config({ path: path.resolve(__dirname, '../../../.env') });
+
+// Define routes for authentication
+router.get('/google', 
+  passport.authenticate('google', { scope: ['profile', 'email'] })
 );
 
-module.exports = passport;
+router.get('/google/callback',
+  passport.authenticate('google', { failureRedirect: '/login' }),
+  (req, res) => {
+    // Successful authentication, redirect home.
+    res.redirect('/');
+  }
+);
+
+// Health check endpoint
+router.get('/check', (req, res) => {
+  res.status(200).json({ status: 'Authentication routes working' });
+});
+
+// Export the router
+export default router;
