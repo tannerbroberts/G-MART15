@@ -1,4 +1,4 @@
-import express, { Router, Request, Response, NextFunction } from 'express';
+import express, { Router, Request, Response, NextFunction, RequestHandler } from 'express';
 import passport from 'passport';
 import jwt from 'jsonwebtoken';
 
@@ -22,7 +22,7 @@ authRouter.get('/google',
 
 authRouter.get('/google/callback',
   passport.authenticate('google', { failureRedirect: '/' }),
-  (req: Request, res: Response) => {
+  ((req: Request, res: Response) => {
     const authReq = req as AuthRequest;
     if (!authReq.user) {
       return res.redirect('/login?error=authentication-failed');
@@ -40,11 +40,11 @@ authRouter.get('/google/callback',
       : `http://localhost:5173/auth/callback?token=${token}`;
       
     res.redirect(redirectUrl);
-  }
+  }) as RequestHandler
 );
 
 // Status route using simple callback
-authRouter.get('/status', (req: Request, res: Response) => {
+authRouter.get('/status', ((req: Request, res: Response) => {
   const isAuthenticated = req.isAuthenticated?.();
   
   if (isAuthenticated) {
@@ -55,10 +55,10 @@ authRouter.get('/status', (req: Request, res: Response) => {
   } else {
     return res.json({ isAuthenticated: false });
   }
-});
+}) as RequestHandler);
 
 // Logout route using simple callback
-authRouter.post('/logout', (req: Request, res: Response) => {
+authRouter.post('/logout', ((req: Request, res: Response) => {
   req.logout((err) => {
     if (err) { 
       return res.status(500).json({ message: 'Logout failed' }); 
@@ -66,6 +66,6 @@ authRouter.post('/logout', (req: Request, res: Response) => {
       return res.json({ message: 'Logged out successfully' });
     }
   });
-});
+}) as RequestHandler);
 
 export default authRouter;
