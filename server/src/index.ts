@@ -131,7 +131,7 @@ if (isProduction) {
   app.use(express.static(path.join(__dirname, "../../dist")));
   
   // For any routes not handled by API endpoints, serve the React app
-  app.get("*", (_req: Request, res: Response) => {
+  app.get("/*splat", (_req: Request, res: Response) => {
     res.sendFile(path.join(__dirname, "../../dist/index.html"));
   });
 } else {

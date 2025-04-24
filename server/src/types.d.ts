@@ -14,9 +14,6 @@ declare global {
   }
 }
 
-// We don't need to declare the db module here since we're using actual TypeScript
-// implementation with proper exports
-
 // Add jsonwebtoken module declaration
 declare module 'jsonwebtoken' {
   export interface JwtPayload {
@@ -68,3 +65,5 @@ declare module 'jsonwebtoken' {
     }
   ): null | JwtPayload | string;
 }
+
+export {};

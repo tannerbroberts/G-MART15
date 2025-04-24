@@ -5,7 +5,7 @@
       "server:dev": "cd server && npm run dev",
       "server:watch": "cd server && npm run watch",
       "start": "concurrently \"npm run client:dev\" \"npm run server:watch\"",
-      "build": "npm run client:build && npm run server:build",
+      "build": "cd server && npm run build",
       "server:build": "cd server && npm run build",
       "serve": "cd server && node dist/index.js",
       "db:setup": "node ./scripts/setup-database.js",
