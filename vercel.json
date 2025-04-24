@@ -1,9 +1,16 @@
 {
-  "buildCommand": "cd client && npm run build",
-  "outputDirectory": "dist",
+  "buildCommand": "cd client && rm -rf node_modules package-lock.json && npm install && npm run build",
+  "outputDirectory": "client/dist",
   "framework": "vite",
+  "installCommand": "cd client && npm install",
   "rewrites": [
-    { "source": "/api/(.*)", "destination": "https://gmart15-blackjack-express-1946fea61846.herokuapp.com/api/$1" },
-    { "source": "/auth/(.*)", "destination": "https://gmart15-blackjack-express-1946fea61846.herokuapp.com/auth/$1" }
+    { 
+      "source": "/api/(.*)", 
+      "destination": "https://gmart15-blackjack-express-1946fea61846.herokuapp.com/api/$1" 
+    },
+    { 
+      "source": "/auth/(.*)", 
+      "destination": "https://gmart15-blackjack-express-1946fea61846.herokuapp.com/auth/$1" 
+    }
   ]
 }
