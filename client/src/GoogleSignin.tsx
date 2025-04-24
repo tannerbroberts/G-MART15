@@ -1,11 +1,7 @@
 import { useState } from 'react';
 import './GoogleSignin.css';
 
-interface GoogleSigninProps {
-  onLoginSuccess?: () => void;
-}
-
-export default function GoogleSignin({ onLoginSuccess }: GoogleSigninProps) {
+const GoogleSignin = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleGoogleLogin = () => {
@@ -47,3 +43,5 @@ export default function GoogleSignin({ onLoginSuccess }: GoogleSigninProps) {
     </div>
   );
 }
+
+export default GoogleSignin;
