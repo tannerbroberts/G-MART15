@@ -9,7 +9,9 @@
       "server:build": "cd server && npm run build",
       "serve": "cd server && node dist/index.js",
       "db:setup": "node ./scripts/setup-database.js",
-      "MaggieSays": "npm install && cd client && npm install && cd ../server && npm install"
+      "MaggieSays": "npm install && cd client && npm install && cd ../server && npm install",
+      "deploy:heroku": "git subtree push --prefix server heroku main",
+      "deploy:heroku:force": "git push heroku `git subtree split --prefix server main`:main --force"
    },
    "keywords": [],
    "author": "",

@@ -1,4 +1,4 @@
-import express, { Router, Request, Response, NextFunction, RequestHandler } from 'express';
+import express, { Router, Request, Response, NextFunction } from 'express';
 import passport from 'passport';
 import jwt from 'jsonwebtoken';
 
@@ -17,12 +17,12 @@ const authRouter: Router = express.Router();
 
 // Auth routes
 authRouter.get('/google',
-  passport.authenticate('google', { scope: ['profile', 'email'] }) as RequestHandler
+  passport.authenticate('google', { scope: ['profile', 'email'] })
 );
 
 authRouter.get('/google/callback',
-  passport.authenticate('google', { failureRedirect: '/' }) as RequestHandler,
-  ((req: Request, res: Response) => {
+  passport.authenticate('google', { failureRedirect: '/' }),
+  (req: Request, res: Response) => {
     const authReq = req as AuthRequest;
     if (!authReq.user) {
       return res.redirect('/login?error=authentication-failed');
@@ -40,11 +40,11 @@ authRouter.get('/google/callback',
       : `http://localhost:5173/auth/callback?token=${token}`;
       
     res.redirect(redirectUrl);
-  }) as RequestHandler
+  }
 );
 
-authRouter.get('/status', ((req: Request, res: Response) => {
-  // Use the built-in isAuthenticated function from Express
+// Status route using simple callback
+authRouter.get('/status', (req: Request, res: Response) => {
   const isAuthenticated = req.isAuthenticated?.();
   
   if (isAuthenticated) {
@@ -52,18 +52,20 @@ authRouter.get('/status', ((req: Request, res: Response) => {
       isAuthenticated: true, 
       user: req.user 
     });
+  } else {
+    return res.json({ isAuthenticated: false });
   }
-  return res.json({ isAuthenticated: false });
-}) as RequestHandler);
+});
 
-// Log out
-authRouter.post('/logout', ((req: Request, res: Response) => {
-  req.logout(function(err) {
+// Logout route using simple callback
+authRouter.post('/logout', (req: Request, res: Response) => {
+  req.logout((err) => {
     if (err) { 
       return res.status(500).json({ message: 'Logout failed' }); 
+    } else {
+      return res.json({ message: 'Logged out successfully' });
     }
-    res.json({ message: 'Logged out successfully' });
   });
-}) as RequestHandler);
+});
 
 export default authRouter;
