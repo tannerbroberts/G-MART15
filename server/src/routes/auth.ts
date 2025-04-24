@@ -22,50 +22,62 @@ authRouter.get('/google',
 
 authRouter.get('/google/callback',
   passport.authenticate('google', { failureRedirect: '/' }),
-  ((req: Request, res: Response) => {
-    const authReq = req as AuthRequest;
-    if (!authReq.user) {
-      return res.redirect('/login?error=authentication-failed');
-    }
-    
-    const token = jwt.sign(
-      { id: authReq.user.id }, 
-      process.env.JWT_SECRET || 'dev-secret-key', 
-      { expiresIn: '1h' }
-    );
-
-    const isProduction = process.env.NODE_ENV === 'production';
-    const redirectUrl = isProduction
-      ? `${process.env.FRONTEND_URL || 'https://your-frontend.vercel.app'}/auth/callback?token=${token}`
-      : `http://localhost:5173/auth/callback?token=${token}`;
+  ((req: Request, res: Response, next: NextFunction) => {
+    try {
+      const authReq = req as AuthRequest;
+      if (!authReq.user) {
+        return res.redirect('/login?error=authentication-failed');
+      }
       
-    res.redirect(redirectUrl);
+      const token = jwt.sign(
+        { id: authReq.user.id }, 
+        process.env.JWT_SECRET || 'dev-secret-key', 
+        { expiresIn: '1h' }
+      );
+
+      const isProduction = process.env.NODE_ENV === 'production';
+      const redirectUrl = isProduction
+        ? `${process.env.FRONTEND_URL || 'https://your-frontend.vercel.app'}/auth/callback?token=${token}`
+        : `http://localhost:5173/auth/callback?token=${token}`;
+        
+      res.redirect(redirectUrl);
+    } catch (error) {
+      next(error);
+    }
   }) as RequestHandler
 );
 
 // Status route using simple callback
-authRouter.get('/status', ((req: Request, res: Response) => {
-  const isAuthenticated = req.isAuthenticated?.();
-  
-  if (isAuthenticated) {
-    return res.json({ 
-      isAuthenticated: true, 
-      user: req.user 
-    });
-  } else {
-    return res.json({ isAuthenticated: false });
+authRouter.get('/status', ((req: Request, res: Response, next: NextFunction) => {
+  try {
+    const isAuthenticated = req.isAuthenticated?.();
+    
+    if (isAuthenticated) {
+      return res.json({ 
+        isAuthenticated: true, 
+        user: req.user 
+      });
+    } else {
+      return res.json({ isAuthenticated: false });
+    }
+  } catch (error) {
+    next(error);
   }
 }) as RequestHandler);
 
 // Logout route using simple callback
-authRouter.post('/logout', ((req: Request, res: Response) => {
-  req.logout((err) => {
-    if (err) { 
-      return res.status(500).json({ message: 'Logout failed' }); 
-    } else {
-      return res.json({ message: 'Logged out successfully' });
-    }
-  });
+authRouter.post('/logout', ((req: Request, res: Response, next: NextFunction) => {
+  try {
+    req.logout((err) => {
+      if (err) { 
+        return res.status(500).json({ message: 'Logout failed' }); 
+      } else {
+        return res.json({ message: 'Logged out successfully' });
+      }
+    });
+  } catch (error) {
+    next(error);
+  }
 }) as RequestHandler);
 
 export default authRouter;
