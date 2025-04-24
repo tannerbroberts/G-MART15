@@ -307,26 +307,34 @@ Backend Features for Smoke Break (Spectator) Mode
   Im a brand new developer.
 
 We want to build a multiplayer blackjack game for the web and we want it to be mobile first.
- We will use react, and express server for the backend.
- Navigation between screens will use react router, send react app from the basepath of the URL, client side app state will be managed with some context, backend will maintain SQL server of game tables, decks, players, etc.
- Unique tableID will be user defined, tableIDs and game sessions will be stored in SQL database, if multiple people enter the same tableID, then they will all join the same table, unless the table is full then we will need to tell them the table is full.
- if a user joins a non-existant table, the table is created for them.
- join requests will be first-come first-serve.
- There is no validation for table passwords or the like.
- Anyone can join any table as long as they know the table name.
- there can be no more than 6 players at a table.
- If users disconnect, then they forfit any money bet.
- Any money won will be added to the payers total, no need to cash out.
- Users will need to log in with Google, and an account using email address will be made in the database.
- Users will be identified by a username that they choose, no more than 20 characters long, filtered for inappropriate names.
- Settings page will have sound control.
- Settings will be persistent across sessions.
- Don't be opinionated about client look and feel.
- tableID must be less than 20 characters, invalid tableID will take you to an error page that says "your table ID is too long" or the like.
- yes we will show loading indicators during network req.
- Games will be multiplayer, dealer will deal cards to each user in the order they joined the table.
- Each player decision will be listened for, but only one players decision will be made at a time.
- If players make a decision when it is not their turn, the server will ignore them.
- Game state will be synchronized between clients by socket server streams and route updates.
- If a user disconnects and socket server stops receiving responses to pings sent every second, then the user will be automatically removed from the table.
- We will prevent abuse by using google login, and if a user creates more than 3 tables in a minute it will be rate limited, attempting to create a 4th table within 60 seconds will redirect to a countdown page where they will be notified when they can create another table.
+We will use react, and express server for the backend.
+Navigation between screens will use react router, send react app from the basepath of the URL, client side app state will be managed with some context, backend will maintain SQL server of game tables, decks, players, etc.
+Unique tableID will be user defined, tableIDs and game sessions will be stored in SQL database, if multiple people enter the same tableID, then they will all join the same table, unless the table is full then we will need to tell them the table is full.
+if a user joins a non-existant table, the table is created for them.
+join requests will be first-come first-serve.
+There is no validation for table passwords or the like.
+Anyone can join any table as long as they know the table name.
+there can be no more than 6 players at a table.
+If users disconnect, then they forfit any money bet.
+Any money won will be added to the payers total, no need to cash out.
+Users will need to log in with Google, and an account using email address will be made in the database.
+Users will be identified by a username that they choose, no more than 20 characters long, filtered for inappropriate names.
+Settings page will have sound control.
+Settings will be persistent across sessions.
+Don't be opinionated about client look and feel.
+tableID must be less than 20 characters, invalid tableID will take you to an error page that says "your table ID is too long" or the like.
+yes we will show loading indicators during network req.
+Games will be multiplayer, dealer will deal cards to each user in the order they joined the table.
+Each player decision will be listened for, but only one players decision will be made at a time.
+If players make a decision when it is not their turn, the server will ignore them.
+Game state will be synchronized between clients by socket server streams and route updates.
+If a user disconnects and socket server stops receiving responses to pings sent every second, then the user will be automatically removed from the table.
+We will prevent abuse by using google login, and if a user creates more than 3 tables in a minute it will be rate limited, attempting to create a 4th table within 60 seconds will redirect to a countdown page where they will be notified when they can create another table.
+When responding to my requests, please:
+Question my approach if you believe I'm lacking important context or making assumptions.
+Push back respectfully when you notice potential issues with my requests or reasoning.
+Suggest alternative approaches if you believe there are more efficient or effective solutions.
+Ask clarifying questions before proceeding when my requests seem ambiguous or potentially problematic.
+Help me reign in my excitement by highlighting practical considerations I may have overlooked.
+Signal clearly when you believe I might be headed down an inefficient path or making a common mistake.
+I value your expertise and critical feedback. Don't hesitate to challenge my thinking when it would lead to better outcomes. This isn't about being negative, but about creating better solutions through thoughtful collaboration.
