@@ -15,7 +15,8 @@ authRouter.get('/google/callback',
     const user = req.user as { id: number } | undefined;
     
     if (!user) {
-      return res.redirect('/login?error=authentication-failed');
+      res.redirect('/login?error=authentication-failed');
+      return;
     }
     
     const token = jwt.sign(
@@ -38,21 +39,23 @@ authRouter.get('/status', ((req: Request, res: Response) => {
   const isAuthenticated = req.isAuthenticated?.();
   
   if (isAuthenticated) {
-    return res.json({ 
+    res.json({ 
       isAuthenticated: true, 
       user: req.user 
     });
+    return;
   }
-  return res.json({ isAuthenticated: false });
+  res.json({ isAuthenticated: false });
 }) as RequestHandler);
 
 // Logout route
 authRouter.post('/logout', ((req: Request, res: Response) => {
   req.logout((err) => {
     if (err) { 
-      return res.status(500).json({ message: 'Logout failed' }); 
+      res.status(500).json({ message: 'Logout failed' });
+      return;
     }
-    return res.json({ message: 'Logged out successfully' });
+    res.json({ message: 'Logged out successfully' });
   });
 }) as RequestHandler);
 
