@@ -16,7 +16,8 @@
     "typeRoots": ["./node_modules/@types", "./src/types"],
     "allowJs": true,
     "checkJs": false,
-    "noImplicitAny": false
+    "noImplicitAny": false,
+    "noEmitOnError": false
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules"]
