@@ -38,7 +38,7 @@
     "passport": "^0.7.0",
     "passport-google-oauth20": "^2.0.0",
     "pg": "^8.15.0",
-    "ts-node": "^10.9.2",
+    "ts-node": "^10.9.2"
   },
   "devDependencies": {
     "concurrently": "^9.1.2",
