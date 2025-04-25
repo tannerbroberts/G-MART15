@@ -8,9 +8,9 @@
     "npm": "10.x"
   },
   "scripts": {
-    "start": "ts-node src/index.ts",
+    "start": "NODE_ENV=production TS_NODE_PROJECT=tsconfig.heroku.json ts-node src/index.ts",
     "dev": "ts-node-dev --respawn src/index.ts",
-    "build": "echo 'No build needed - using ts-node'",
+    "build": "echo 'Skipping build step'",
     "postinstall": "npm run build",
     "watch": "ts-node-dev --respawn src/index.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
