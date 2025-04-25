@@ -2,15 +2,15 @@
   "name": "server",
   "version": "1.0.0",
   "description": "",
-  "main": "dist/index.js",
+  "main": "src/index.ts",
   "engines": {
     "node": "22.x",
     "npm": "10.x"
   },
   "scripts": {
-    "start": "node dist/index.js",
-    "dev": "ts-node src/index.ts",
-    "build": "tsc --project tsconfig.prod.json",
+    "start": "ts-node src/index.ts",
+    "dev": "ts-node-dev --respawn src/index.ts",
+    "build": "echo 'No build needed - using ts-node'",
     "postinstall": "npm run build",
     "watch": "ts-node-dev --respawn src/index.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
