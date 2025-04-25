@@ -8,10 +8,11 @@
     "npm": "10.x"
   },
   "scripts": {
-    "start": "NODE_ENV=production TS_NODE_PROJECT=tsconfig.heroku.json ts-node src/index.ts",
+    "start": "NODE_ENV=production node ./dist/index.js",
     "dev": "ts-node-dev --respawn src/index.ts",
     "watch": "ts-node-dev --respawn src/index.ts",
-    "heroku-postbuild": "echo 'Skipping build step'",
+    "build": "tsc -p tsconfig.heroku.json",
+    "heroku-postbuild": "npm run build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],

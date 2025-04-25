@@ -1,31 +1,47 @@
-import passport from 'passport';
-import { Router } from 'express';
-import dotenv from 'dotenv';
-import path from 'path';
-
-// Create an express router
-const router = Router();
-
-// Load environment variables from project root .env file
-dotenv.config({ path: path.resolve(__dirname, '../../../.env') });
-
-// Define routes for authentication
-router.get('/google', 
-  passport.authenticate('google', { scope: ['profile', 'email'] })
-);
-
-router.get('/google/callback',
-  passport.authenticate('google', { failureRedirect: '/login' }),
-  (req, res) => {
-    // Successful authentication, redirect home.
-    res.redirect('/');
-  }
-);
-
-// Health check endpoint
-router.get('/check', (req, res) => {
-  res.status(200).json({ status: 'Authentication routes working' });
-});
-
-// Export the router
-export default router;
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = __importDefault(require("express"));
+const passport_1 = __importDefault(require("passport"));
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+const authRouter = express_1.default.Router();
+// Auth routes
+authRouter.get('/google', passport_1.default.authenticate('google', { scope: ['profile', 'email'] }));
+authRouter.get('/google/callback', passport_1.default.authenticate('google', { failureRedirect: '/' }), ((req, res) => {
+    const user = req.user;
+    if (!user) {
+        res.redirect('/login?error=authentication-failed');
+        return;
+    }
+    const token = jsonwebtoken_1.default.sign({ id: user.id }, process.env.JWT_SECRET || 'dev-secret-key', { expiresIn: '1h' });
+    const isProduction = process.env.NODE_ENV === 'production';
+    const redirectUrl = isProduction
+        ? `${process.env.FRONTEND_URL || 'https://your-frontend.vercel.app'}/auth/callback?token=${token}`
+        : `http://localhost:5173/auth/callback?token=${token}`;
+    res.redirect(redirectUrl);
+}));
+// Status route
+authRouter.get('/status', ((req, res) => {
+    const isAuthenticated = req.isAuthenticated?.();
+    if (isAuthenticated) {
+        res.json({
+            isAuthenticated: true,
+            user: req.user
+        });
+        return;
+    }
+    res.json({ isAuthenticated: false });
+}));
+// Logout route
+authRouter.post('/logout', ((req, res) => {
+    req.logout((err) => {
+        if (err) {
+            res.status(500).json({ message: 'Logout failed' });
+            return;
+        }
+        res.json({ message: 'Logged out successfully' });
+    });
+}));
+exports.default = authRouter;
