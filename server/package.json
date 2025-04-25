@@ -11,7 +11,7 @@
     "start": "NODE_ENV=production node ./dist/index.js",
     "dev": "ts-node-dev --respawn src/index.ts",
     "watch": "ts-node-dev --respawn src/index.ts",
-    "build": "tsc -p tsconfig.heroku.json",
+    "build": "npx tsc -p tsconfig.heroku.json",
     "heroku-postbuild": "npm run build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
