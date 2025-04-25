@@ -7,6 +7,10 @@ import PipPlacementGenerator from './components/PipPlacementGenerator';
 import { initialCards } from './initialCards';
 import { handleCardClick } from './utils';
 import { PipPlacementMap } from './cardGenerator';
+//Sound and music handlers
+import { SoundProvider } from './context/SoundContext';
+import GameRouter from './router/GameRouter';
+import MusicControls from './components/MusicControls';
 
 const App: React.FC = () => {
   const [cards, setCards] = useState(initialCards);
@@ -22,6 +26,8 @@ const App: React.FC = () => {
   const onCardClick = (id: string) => setCards(cards => handleCardClick(cards, id));
 
   return (
+    
+    <SoundProvider>
     <div className='appcontainer'>
       <div className="card-table">
         <LoginPage />
@@ -79,6 +85,8 @@ const App: React.FC = () => {
         )}
       </div>
     </div>
+    <MusicControls />
+    </SoundProvider>
   );
 };
 
