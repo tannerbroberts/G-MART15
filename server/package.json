@@ -13,7 +13,8 @@
     "watch": "ts-node-dev --respawn src/index.ts",
     "build": "tsc -p tsconfig.heroku.json",
     "heroku-postbuild": "npm run build",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "typescript": "^5.8.3"
   },
   "keywords": [],
   "author": "",
@@ -38,7 +39,6 @@
     "passport-google-oauth20": "^2.0.0",
     "pg": "^8.15.0",
     "ts-node": "^10.9.2",
-    "typescript": "^5.8.3"
   },
   "devDependencies": {
     "concurrently": "^9.1.2",
