@@ -11,8 +11,8 @@
     "start": "NODE_ENV=production node ./dist/index.js",
     "dev": "ts-node-dev --respawn src/index.ts",
     "watch": "ts-node-dev --respawn src/index.ts",
-    "build": "tsc -p tsconfig.heroku.json",
-    "heroku-postbuild": "npm run build",
+    "build": "npx tsc -p tsconfig.heroku.json",
+    "heroku-postbuild": "npm install && npx tsc -p tsconfig.heroku.json",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -40,7 +40,6 @@
     "ts-node": "^10.9.2",
     "typescript": "^5.8.3",
     "ts-node-dev": "^2.0.0"
-
   },
   "devDependencies": {
     "concurrently": "^9.1.2"
