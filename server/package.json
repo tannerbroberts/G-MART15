@@ -11,6 +11,7 @@
     "start": "NODE_ENV=production TS_NODE_PROJECT=tsconfig.heroku.json ts-node src/index.ts",
     "dev": "ts-node-dev --respawn src/index.ts",
     "watch": "ts-node-dev --respawn src/index.ts",
+    "heroku-postbuild": "echo 'Skipping build step'",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
