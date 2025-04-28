@@ -89,6 +89,7 @@ app.get('/auth/google',
   passport.authenticate('google', { scope: ['profile', 'email'] })
 );
 
+// Fix the TypeScript error in the Google auth callback route
 app.get('/auth/google/callback',
   passport.authenticate('google', { session: false, failureRedirect: '/' }),
   (req: Request, res: Response) => {
@@ -116,7 +117,7 @@ app.get('/auth/google/callback',
       : `http://localhost:5173/auth/callback?token=${token}`; // Separate domain in dev
       
     console.log(`Redirecting to: ${redirectUrl}`);
-    res.redirect(redirectUrl);
+    return res.redirect(redirectUrl);
   }
 );
 
