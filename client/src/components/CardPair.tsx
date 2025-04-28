@@ -1,14 +1,9 @@
 import React from "react";
 import Card from "./Card";
+import { CardData } from "../types";
+
 interface CardPairProps {
-  cards: Array<{
-    id: string;
-    location: { x: number; y: number };
-    size: "large" | "small";
-    cardBackImage: string;
-    cardFrontImage: string;
-    isFlipped: boolean;
-  }>;
+  cards: [CardData, CardData]; // Explicitly require exactly two cards
   onCardClick?: (id: string) => void;
 }
 

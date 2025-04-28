@@ -10,7 +10,7 @@
 }
 
 .card {
-  position: absolute;
+  position: relative;
   width: 500px;
   height: 600px;
   perspective: 1000px;
@@ -67,9 +67,10 @@
   bottom: 10%;
   left: 50%;
   transform: translateX(-50%);
+  z-index: 1;
 }
 .app-container {
-  background-color: #68A65E;
+  background-color: #68a65e;
   flex: 1;
   display: flex;
   justify-content: center;
