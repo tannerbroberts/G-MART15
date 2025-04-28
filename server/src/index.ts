@@ -132,15 +132,32 @@ app.get("/api/hello", (_req: Request, res: Response) => {
 
 // Serve static files from the client's dist directory in production
 if (isProduction) {
-  // Static files will now be in dist/client after our heroku-postbuild script runs
-  const clientPath = path.join(__dirname, '../client');
-  console.log('Serving static files from:', clientPath);
+  // Determine the client dist path - check if we're in Heroku or local environment
+  const clientDistPath = path.resolve(__dirname, '../../client/dist');
+  console.log('Looking for static files at:', clientDistPath);
   
-  app.use(express.static(clientPath));
+  // Verify the path exists before attempting to serve from it
+  try {
+    const stats = require('fs').statSync(clientDistPath);
+    if (stats.isDirectory()) {
+      console.log('✅ Static file directory found');
+    }
+  } catch (err) {
+    console.error('❌ Static file directory not found:', err.message);
+    console.log('Working directory:', process.cwd());
+    console.log('__dirname:', __dirname);
+  }
+  
+  app.use(express.static(clientDistPath));
   
   // For any routes not handled by API endpoints, serve the React app
   app.get("*", (_req: Request, res: Response) => {
-    res.sendFile(path.join(clientPath, "index.html"));
+    try {
+      res.sendFile(path.join(clientDistPath, "index.html"));
+    } catch (err) {
+      console.error('Error serving index.html:', err);
+      res.status(500).send('Error loading application');
+    }
   });
 } else {
   // In development, we'll let the React dev server handle client-side routing
