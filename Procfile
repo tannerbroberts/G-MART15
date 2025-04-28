@@ -1,1 +1,1 @@
-web: npm install -g typescript && cd server && npm install && npm run build && npm start
+web: npm start
