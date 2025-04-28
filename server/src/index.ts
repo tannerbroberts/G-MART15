@@ -132,28 +132,59 @@ app.get("/api/hello", (_req: Request, res: Response) => {
 
 // Serve static files from the client's dist directory in production
 if (isProduction) {
-  // Determine the client dist path - check if we're in Heroku or local environment
-  const clientDistPath = path.resolve(__dirname, '../../client/dist');
-  console.log('Looking for static files at:', clientDistPath);
+  // In Heroku, when using subtree push, the static files need to be relative to the server
+  // We'll check multiple possible locations for the client files
+  const possiblePaths = [
+    path.join(__dirname, '../client/dist'),          // If client was built in server directory
+    path.join(__dirname, '../../client/dist'),       // From default structure
+    path.join(__dirname, '../public'),               // Conventional public folder
+    path.join(__dirname, '../dist'),                 // If client build was copied to server/dist
+    path.join(__dirname, '../dist/client')           // Another possible location
+  ];
   
-  // Verify the path exists before attempting to serve from it
-  try {
-    const stats = require('fs').statSync(clientDistPath);
-    if (stats.isDirectory()) {
-      console.log('✅ Static file directory found');
+  let clientDistPath = null;
+  
+  // Find the first path that exists
+  for (const testPath of possiblePaths) {
+    try {
+      if (require('fs').existsSync(testPath)) {
+        console.log(`✅ Found static files at: ${testPath}`);
+        clientDistPath = testPath;
+        break;
+      }
+    } catch (err) {
+      // Ignore errors checking paths
     }
-  } catch (err) {
-    console.error('❌ Static file directory not found:', err.message);
-    console.log('Working directory:', process.cwd());
-    console.log('__dirname:', __dirname);
   }
   
+  if (!clientDistPath) {
+    console.error('❌ Could not find static file directory in any expected location!');
+    console.log('Working directory:', process.cwd());
+    console.log('__dirname:', __dirname);
+    
+    // Fallback to current directory + dist as last resort
+    clientDistPath = path.join(process.cwd(), 'dist');
+    console.log(`Using fallback path: ${clientDistPath}`);
+  }
+  
+  // Try to serve static files
   app.use(express.static(clientDistPath));
   
-  // For any routes not handled by API endpoints, serve the React app
-  app.get("*", (_req: Request, res: Response) => {
+  // Set up a route to deliver the React app for any requests not handled by the API
+  app.get("*", (req: Request, res: Response) => {
+    // Skip API routes
+    if (req.path.startsWith('/api') || req.path.startsWith('/auth')) {
+      return res.status(404).send('API endpoint not found');
+    }
+    
     try {
-      res.sendFile(path.join(clientDistPath, "index.html"));
+      const indexPath = path.join(clientDistPath, "index.html");
+      if (require('fs').existsSync(indexPath)) {
+        return res.sendFile(indexPath);
+      } else {
+        console.error(`Index file not found at ${indexPath}`);
+        return res.status(404).send('Application files not found');
+      }
     } catch (err) {
       console.error('Error serving index.html:', err);
       res.status(500).send('Error loading application');
