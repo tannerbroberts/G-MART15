@@ -9,21 +9,29 @@ dotenv.config({ path: path.resolve(__dirname, '../../../.env') });
 
 // PostgreSQL configuration helper
 const getConfig = () => {
+  const isProduction = process.env.NODE_ENV === 'production';
+  console.log(`Database environment: ${isProduction ? 'production' : 'development'}`);
+  
   if (process.env.DATABASE_URL) {
-    // For remote databases (like Heroku), ensure SSL is configured properly
+    // For remote databases (like Heroku)
+    console.log(`Using DATABASE_URL from environment`);
     return { 
       connectionString: process.env.DATABASE_URL,
-      ssl: { rejectUnauthorized: false }
+      ssl: { 
+        rejectUnauthorized: false // Required for Heroku Postgres
+      }
     };
   } else {
     // For local development
-    return {
+    const config = {
       host: process.env.DB_HOST || 'localhost',
       port: parseInt(process.env.DB_PORT || '5432', 10),
       user: process.env.DB_USER || 'postgres',
       password: process.env.DB_PASSWORD,
       database: process.env.DB_DATABASE || 'blackjack',
     };
+    console.log(`Using local database connection: ${config.host}:${config.port}/${config.database}`);
+    return config;
   }
 };
 
@@ -43,7 +51,10 @@ const createKnex = () => {
   return Knex({
     client: 'pg',
     connection: getConfig(),
-    pool: { min: 2, max: 10 }
+    pool: { min: 2, max: 10 },
+    migrations: {
+      directory: path.join(__dirname, '../../migrations')
+    }
   });
 };
 
@@ -69,8 +80,21 @@ const initDb = async (): Promise<void> => {
     const result = await client.query('SELECT version(), current_database(), current_user');
     console.log(`Connected to: ${result.rows[0].current_database}`);
     console.log(`PostgreSQL version: ${result.rows[0].version.split(' ')[1]}`);
+    console.log(`Database user: ${result.rows[0].current_user}`);
     
+    // Close the test client
     await client.end();
+    
+    // Run migrations (only if database connection is successful)
+    try {
+      console.log('Running database migrations...');
+      await db.migrate.latest();
+      console.log('Migrations completed successfully');
+    } catch (migrationErr: any) {
+      console.error('Migration error:', migrationErr.message);
+      // Don't throw, just log the error
+    }
+    
   } catch (err: any) {
     console.error('❌ Database connection failed:', err.message);
     
@@ -88,8 +112,8 @@ const initDb = async (): Promise<void> => {
       // Ignore errors when ending client after connection failure
     }
     
-    // Don't rethrow, just log the error - this allows server to start without DB
-    console.warn('Server will start despite database connection issues');
+    // Rethrow to allow caller to handle this
+    throw err;
   }
 };
 

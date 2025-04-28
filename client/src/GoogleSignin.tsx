@@ -8,7 +8,7 @@ const GoogleSignin = () => {
     setIsLoading(true);
     // Get the base URL of the current environment
     const apiUrl = process.env.NODE_ENV === 'production' 
-      ? '' // In production, use relative URLs (they'll go to same domain)
+      ? 'https://gmart15-blackjack-express-1946fea61846.herokuapp.com' // Use the full Heroku URL in production
       : 'http://localhost:3000'; // In dev, point to the Express server
       
     // Redirect to the Google OAuth route on our server

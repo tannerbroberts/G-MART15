@@ -94,9 +94,11 @@ app.get('/auth/google/callback',
   (req: Request, res: Response) => {
     // Extend req.user type to include id
     const user = req.user as { id: number } | undefined;
+    console.log('Google auth callback - profile:', user ? (user as any).displayName : 'Not available');
 
     // Check if user exists before accessing properties
     if (!user || !user.id) {
+      console.error('Authentication failed - user object invalid');
       return res.redirect('/login?error=authentication-failed');
     }
     
@@ -108,10 +110,12 @@ app.get('/auth/google/callback',
     );
     
     // Redirect to frontend with token
+    // In production, we're handling the frontend on the same domain through Express
     const redirectUrl = isProduction
-      ? `${process.env.FRONTEND_URL || 'https://your-frontend.vercel.app'}/auth/callback?token=${token}`
-      : `http://localhost:5173/auth/callback?token=${token}`;
+      ? `/auth/callback?token=${token}` // Same domain in production
+      : `http://localhost:5173/auth/callback?token=${token}`; // Separate domain in dev
       
+    console.log(`Redirecting to: ${redirectUrl}`);
     res.redirect(redirectUrl);
   }
 );
@@ -128,11 +132,15 @@ app.get("/api/hello", (_req: Request, res: Response) => {
 
 // Serve static files from the client's dist directory in production
 if (isProduction) {
-  app.use(express.static(path.join(__dirname, "../../dist")));
+  // Static files will now be in dist/client after our heroku-postbuild script runs
+  const clientPath = path.join(__dirname, '../client');
+  console.log('Serving static files from:', clientPath);
+  
+  app.use(express.static(clientPath));
   
   // For any routes not handled by API endpoints, serve the React app
-  app.get("/*splat", (_req: Request, res: Response) => {
-    res.sendFile(path.join(__dirname, "../../dist/index.html"));
+  app.get("*", (_req: Request, res: Response) => {
+    res.sendFile(path.join(clientPath, "index.html"));
   });
 } else {
   // In development, we'll let the React dev server handle client-side routing

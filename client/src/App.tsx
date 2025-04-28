@@ -1,7 +1,5 @@
-import './App.css'
 import React, { useState, useCallback } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import './App.css';
 import LoginPage from './loginpage';
 import CardSelector from './components/CardSelector';
 import CardTable from './components/CardTable';
