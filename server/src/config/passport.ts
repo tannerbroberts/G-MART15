@@ -21,9 +21,12 @@ if (!clientId || !clientSecret) {
 
 // Environment specific callback URL
 const isProduction = process.env.NODE_ENV === 'production';
+// Fix the callback URL to always use the correct domain
 const callbackURL = isProduction
-  ? `${process.env.FRONTEND_URL || 'https://gmart15-blackjack-express-1946fea61846.herokuapp.com'}/auth/google/callback`
+  ? 'https://gmart15-blackjack-express-1946fea61846.herokuapp.com/auth/google/callback'
   : 'http://localhost:3000/auth/google/callback';
+
+console.log(`Google OAuth callback URL: ${callbackURL}`);
 
 const configurePassport = () => {
   // Serialize user to session

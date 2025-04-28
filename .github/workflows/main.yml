@@ -10,12 +10,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Install Heroku CLI # <- IMPORTANT!!! Make sure the cli is installed before using the action
+      - name: Install Heroku CLI
         run: |
           curl https://cli-assets.heroku.com/install.sh | sh
-      - uses: akhileshns/heroku-deploy@v3.14.15 # This is the action
+      - uses: akhileshns/heroku-deploy@v3.14.15
         with:
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
           heroku_app_name: "gmart15-blackjack-express" #Must be unique in Heroku
           heroku_email: "tannerbroberts@gmail.com"
-          appdir: "server" # <- This will point to the api folder in your project
+          # Remove appdir to deploy the entire repository
+          healthcheck: "https://gmart15-blackjack-express-1946fea61846.herokuapp.com/api/check"
+          checkstring: "Backend is live!"
+          rollbackonhealthcheckfailed: true

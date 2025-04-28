@@ -3,24 +3,44 @@ import pg from 'pg';
 import Knex from 'knex';
 import dotenv from 'dotenv';
 import path from 'path';
+import fs from 'fs';
 
-// Load environment variables
-dotenv.config({ path: path.resolve(__dirname, '../../../.env') });
+// Load environment variables with better error handling
+try {
+  const envPath = path.resolve(__dirname, '../../../.env');
+  if (fs.existsSync(envPath)) {
+    dotenv.config({ path: envPath });
+    console.log('Loaded .env file from:', envPath);
+  } else {
+    console.log('No .env file found at', envPath, 'using environment variables only');
+    dotenv.config(); // Try default location as fallback
+  }
+} catch (err) {
+  console.warn('Error loading .env file, falling back to environment variables:', err);
+}
 
 // PostgreSQL configuration helper
 const getConfig = () => {
   const isProduction = process.env.NODE_ENV === 'production';
   console.log(`Database environment: ${isProduction ? 'production' : 'development'}`);
   
+  // For Heroku, use DATABASE_URL (automatically set by Heroku PostgreSQL addon)
   if (process.env.DATABASE_URL) {
-    // For remote databases (like Heroku)
-    console.log(`Using DATABASE_URL from environment`);
-    return { 
+    console.log('Using DATABASE_URL from environment');
+    const config = { 
       connectionString: process.env.DATABASE_URL,
       ssl: { 
         rejectUnauthorized: false // Required for Heroku Postgres
       }
     };
+    
+    // Log partial connection string for debugging (hiding credentials)
+    const urlParts = process.env.DATABASE_URL.split('@');
+    if (urlParts.length > 1) {
+      console.log(`Connection to: ${urlParts[1].split('/')[0]}`);
+    }
+    
+    return config;
   } else {
     // For local development
     const config = {

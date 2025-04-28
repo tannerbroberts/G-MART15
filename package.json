@@ -10,9 +10,8 @@
       "serve": "cd server && node dist/index.js",
       "db:setup": "node ./scripts/setup-database.js",
       "MaggieSays": "npm install && cd client && npm install && cd ../server && npm install",
-      "deploy:heroku": "git subtree push --prefix server heroku main",
-      "deploy:heroku:force": "git push heroku `git subtree split --prefix server main`:main --force",
-      "heroku-postbuild": "npm install typescript -g && npm run build"
+      "deploy:heroku": "git push heroku main",
+      "heroku-postbuild": "npm run MaggieSays && npm run build && npm run db:setup"
    },
    "engines": {
       "node": "22.x",
