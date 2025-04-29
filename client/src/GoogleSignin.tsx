@@ -6,9 +6,15 @@ const GoogleSignin = () => {
 
   const handleGoogleLogin = () => {
     setIsLoading(true);
+    
+    // Check if we should use relative paths in production
+    const useRelativeApi = import.meta.env.VITE_RELATIVE_API === 'true';
+    
     // Get the base URL of the current environment
     const apiUrl = process.env.NODE_ENV === 'production' 
-      ? 'https://gmart15-blackjack-express-1946fea61846.herokuapp.com' // Use the full Heroku URL in production
+      ? useRelativeApi 
+        ? '' // Empty string for relative path
+        : (import.meta.env.VITE_API_URL || 'https://gmart15-blackjack-express.herokuapp.com')
       : 'http://localhost:3000'; // In dev, point to the Express server
       
     // Redirect to the Google OAuth route on our server

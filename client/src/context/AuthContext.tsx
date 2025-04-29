@@ -1,6 +1,26 @@
 import { createContext, useState, useEffect, useContext, type ReactNode } from 'react';
 import axios from 'axios';
 
+// Configure API base URL based on environment
+const getApiBaseUrl = (): string => {
+  const isProd = import.meta.env.PROD;
+  const useRelativeApi = import.meta.env.VITE_RELATIVE_API === 'true';
+  
+  if (isProd && useRelativeApi) {
+    return ''; // Empty string for relative paths in production
+  }
+  
+  return import.meta.env.VITE_API_URL || (isProd 
+    ? 'https://gmart15-blackjack-express.herokuapp.com' 
+    : 'http://localhost:3000');
+};
+
+// Set up axios defaults
+const API_BASE_URL = getApiBaseUrl();
+if (API_BASE_URL) {
+  axios.defaults.baseURL = API_BASE_URL;
+}
+
 interface User {
   id: number;
   email: string;
