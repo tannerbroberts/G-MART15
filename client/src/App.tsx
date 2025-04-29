@@ -1,125 +1,232 @@
-import './App.css'
-import React, { useState, useCallback } from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import './App.css';
-import LoginPage from './loginpage';
-import CardSelector from './components/CardSelector';
-import CardTable from './components/CardTable';
-import PipPlacementGenerator from './components/PipPlacementGenerator';
-import { initialCards } from './initialCards';
-import { handleCardClick } from './utils';
-import { PipPlacementMap } from './cardGenerator';
-import { AuthProvider } from './context/AuthContext';
-import ProtectedRoute from './components/ProtectedRoute';
-import AuthCallback from './pages/AuthCallback';
-import MenuPage from './menupage';
-import JoinGamePage from './joingamepage';
-import UsernamePage from './usernamepage';
+import "./App.css";
+import React, { useState, useCallback, useEffect } from "react";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import LoginPage from "./loginpage";
+import CardSelector from "./components/CardSelector";
+import CardTable from "./components/CardTable";
+import PipPlacementGenerator from "./components/PipPlacementGenerator";
+import { initialCards } from "./initialCards";
+import { handleCardClick } from "./utils";
+import { PipPlacementMap } from "./cardGenerator";
+import { AuthProvider } from "./context/AuthContext";
+import ProtectedRoute from "./components/ProtectedRoute";
+import AuthCallback from "./pages/AuthCallback";
+import MenuPage from "./menupage";
+import JoinGamePage from "./joingamepage";
+import UsernamePage from "./usernamepage";
+import GameLobby from "./components/GameLobby";
+import { socketService } from "./services/socketService";
+import { CardData } from "./types";
 
 const GameComponent: React.FC = () => {
-  const [cards, setCards] = useState(initialCards);
+  const [cards, setCards] = useState<CardData[]>(initialCards);
   const [showPipGenerator, setShowPipGenerator] = useState(false);
-  
+  const [isInLobby, setIsInLobby] = useState(true);
+  const [isHost, setIsHost] = useState(false);
+  const [tableId, setTableId] = useState("");
+  const [isConnected, setIsConnected] = useState(false);
+
   // We'll store custom pip placements in localStorage for persistence
   const handleSavePipPlacements = useCallback((placements: PipPlacementMap) => {
     // Save to localStorage for persistence
-    localStorage.setItem('customPipPlacements', JSON.stringify(placements));
-    console.log('Saved pip placements to localStorage');
+    localStorage.setItem("customPipPlacements", JSON.stringify(placements));
+    console.log("Saved pip placements to localStorage");
   }, []);
 
-  const onCardClick = (id: string) => setCards(cards => handleCardClick(cards, id));
+  useEffect(() => {
+    // Get tableId from URL or generate new one
+    const urlTableId = window.location.pathname.split("/").pop();
+    if (urlTableId && urlTableId !== "game") {
+      setTableId(urlTableId);
+      setIsHost(false);
+    } else {
+      // Generate a random table ID if none provided
+      const newTableId = Math.random().toString(36).substring(2, 8);
+      setTableId(newTableId);
+      setIsHost(true);
+    }
+  }, []);
+
+  // Separate effect for socket connection
+  useEffect(() => {
+    if (!tableId) return;
+
+    const connectSocket = () => {
+      if (!socketService.isConnected()) {
+        console.log("Connecting to socket with tableId:", tableId);
+        socketService.connect(tableId, "test-user");
+      }
+    };
+
+    connectSocket();
+
+    // Cleanup function
+    return () => {
+      console.log("Disconnecting socket");
+      socketService.disconnect();
+    };
+  }, [tableId]);
+
+  // Effect to monitor connection status
+  useEffect(() => {
+    const checkConnection = () => {
+      setIsConnected(socketService.isConnected());
+    };
+
+    const interval = setInterval(checkConnection, 1000);
+    checkConnection(); // Initial check
+
+    return () => clearInterval(interval);
+  }, []);
+
+  const handleStartGame = useCallback(() => {
+    if (isConnected) {
+      socketService.startGame();
+      setIsInLobby(false);
+    }
+  }, [isConnected]);
+
+  const handleRejoin = useCallback(() => {
+    if (isConnected) {
+      socketService.requestRejoin();
+    }
+  }, [isConnected]);
+
+  const handleExit = useCallback(() => {
+    socketService.exitGame();
+  }, []);
+
+  const onCardClick = useCallback((id: string) => {
+    setCards((prevCards) => handleCardClick(prevCards, id));
+  }, []);
 
   return (
-    <div className="card-table">
-      {/* Fixed top bar with controls */}
-      <div style={{ 
-        position: 'absolute', 
-        top: 24, 
-        right: 24, 
-        zIndex: 10,
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'flex-end'
-      }}>
-        <div>
-          <CardSelector />
-          <button 
-            onClick={() => setShowPipGenerator(!showPipGenerator)}
-            style={{ 
-              marginLeft: '10px', 
-              padding: '8px 12px',
-              position: 'relative',
-              zIndex: 20 // Higher z-index to keep button on top
+    <div className="app-container">
+      {isInLobby ? (
+        <GameLobby
+          isHost={isHost}
+          tableId={tableId}
+          onStartGame={handleStartGame}
+          onRejoin={handleRejoin}
+          onExit={handleExit}
+        />
+      ) : (
+        <div className="card-table">
+          {/* Fixed top bar with controls */}
+          <div
+            style={{
+              position: "absolute",
+              top: 24,
+              right: 24,
+              zIndex: 10,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "flex-end",
             }}
           >
-            {showPipGenerator ? 'Show Card Table' : 'Show Pip Generator'}
-          </button>
+            <div>
+              <CardSelector />
+              <button
+                onClick={() => setShowPipGenerator(!showPipGenerator)}
+                style={{
+                  marginLeft: "10px",
+                  padding: "8px 12px",
+                  position: "relative",
+                  zIndex: 20,
+                }}
+              >
+                {showPipGenerator ? "Show Card Table" : "Show Pip Generator"}
+              </button>
+            </div>
+          </div>
+
+          {/* Show Pip Generator in a fixed position below the buttons */}
+          {showPipGenerator && (
+            <div
+              style={{
+                position: "fixed",
+                top: "100px",
+                right: "24px",
+                left: "24px",
+                backgroundColor: "white",
+                border: "1px solid #ccc",
+                borderRadius: "8px",
+                boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
+                zIndex: 15,
+                padding: "10px",
+                maxWidth: "1200px",
+                margin: "0 auto",
+                height: "auto",
+              }}
+            >
+              <PipPlacementGenerator onSave={handleSavePipPlacements} />
+            </div>
+          )}
+
+          {/* Only show CardTable if pip generator is not visible */}
+          {!showPipGenerator && (
+            <CardTable cards={cards} onCardClick={onCardClick} />
+          )}
         </div>
-      </div>
-      
-      {/* Show Pip Generator in a fixed position below the buttons */}
-      {showPipGenerator && (
-        <div style={{ 
-          position: 'fixed',
-          top: '100px', // Fixed position from top with enough space for buttons
-          right: '24px',
-          left: '24px',
-          backgroundColor: 'white', 
-          border: '1px solid #ccc',
-          borderRadius: '8px',
-          boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
-          zIndex: 15,
-          padding: '10px',
-          maxWidth: '1200px',
-          margin: '0 auto',
-          height: 'auto'
-        }}>
-          <PipPlacementGenerator onSave={handleSavePipPlacements} />
-        </div>
-      )}
-      
-      {/* Only show CardTable if pip generator is not visible */}
-      {!showPipGenerator && (
-        <CardTable cards={cards} onCardClick={onCardClick} />
       )}
     </div>
   );
-}
+};
 
 const App: React.FC = () => {
   return (
     <BrowserRouter>
       <AuthProvider>
-        <div className='appcontainer'>
+        <div className="appcontainer">
           <Routes>
             <Route path="/login" element={<LoginPage />} />
             <Route path="/auth/callback" element={<AuthCallback />} />
-            <Route path="/username" element={
-              <ProtectedRoute>
-                <UsernamePage />
-              </ProtectedRoute>
-            } />
-            <Route path="/menu" element={
-              <ProtectedRoute>
-                <MenuPage />
-              </ProtectedRoute>
-            } />
-            <Route path="/join-game" element={
-              <ProtectedRoute>
-                <JoinGamePage />
-              </ProtectedRoute>
-            } />
-            <Route path="/game" element={
-              <ProtectedRoute>
-                <GameComponent />
-              </ProtectedRoute>
-            } />
+            <Route
+              path="/username"
+              element={
+                <ProtectedRoute>
+                  <UsernamePage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/menu"
+              element={
+                <ProtectedRoute>
+                  <MenuPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/join-game"
+              element={
+                <ProtectedRoute>
+                  <JoinGamePage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/game"
+              element={
+                <ProtectedRoute>
+                  <GameComponent />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/table/:tableId"
+              element={
+                <ProtectedRoute>
+                  <GameComponent />
+                </ProtectedRoute>
+              }
+            />
             <Route path="/" element={<Navigate to="/login" replace />} />
           </Routes>
         </div>
       </AuthProvider>
     </BrowserRouter>
   );
-}
+};
 
 export default App;

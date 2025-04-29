@@ -1,12 +1,14 @@
 .card-table {
-  position: relative;
+  position: fixed;
   top: 0;
   left: 0;
   width: 100vw;
   height: 100vh;
-  background: #9fd417;
+  background-color: #2c3e50;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   overflow: hidden;
-  z-index: 0;
 }
 
 .card {
@@ -68,10 +70,321 @@
   left: 50%;
   transform: translateX(-50%);
 }
+
 .app-container {
-  background-color: #68A65E;
-  flex: 1;
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.game-lobby {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: linear-gradient(135deg, #1a472a 0%, #2c3e50 100%);
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 100;
+}
+
+.smoke-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(128, 128, 128, 0.5);
+  backdrop-filter: blur(5px);
+  z-index: -1;
+}
+
+.lobby-content {
+  background: rgba(255, 255, 255, 0.95);
+  padding: 2.5rem;
+  border-radius: 1rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  text-align: center;
+  max-width: 600px;
+  width: 90%;
+  position: relative;
+  border: 2px solid #daa520;
+}
+
+.lobby-content::before {
+  content: "";
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(45deg, #daa520, #ffd700);
+  border-radius: 1rem;
+  z-index: -1;
+}
+
+.lobby-title {
+  font-size: 2rem;
+  color: #2c3e50;
+  margin-bottom: 1.5rem;
+  font-family: "Times New Roman", serif;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.connection-status {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.connection-status::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: currentColor;
+}
+
+.connected {
+  background-color: rgba(76, 175, 80, 0.9);
+  color: white;
+}
+
+.disconnected {
+  background-color: rgba(244, 67, 54, 0.9);
+  color: white;
+}
+
+.qr-container {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 0.5rem;
+  margin: 2rem auto;
+  max-width: 250px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border: 1px solid #daa520;
+}
+
+.lobby-buttons {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.lobby-buttons button {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 0.9rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.lobby-buttons button::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  transition: 0.5s;
+}
+
+.lobby-buttons button:hover::before {
+  left: 100%;
+}
+
+.lobby-buttons button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.start-game-btn {
+  background: linear-gradient(45deg, #2ecc71, #27ae60);
+  color: white;
+  border: 1px solid #27ae60;
+}
+
+.rejoin-btn {
+  background: linear-gradient(45deg, #3498db, #2980b9);
+  color: white;
+  border: 1px solid #2980b9;
+}
+
+.share-btn {
+  background: linear-gradient(45deg, #f1c40f, #f39c12);
+  color: white;
+  border: 1px solid #f39c12;
+}
+
+.exit-btn {
+  background: linear-gradient(45deg, #e74c3c, #c0392b);
+  color: white;
+  border: 1px solid #c0392b;
+}
+
+.share-link-popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  padding: 1.5rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  z-index: 1001;
+  border: 2px solid #daa520;
+  animation: popIn 0.3s ease-out;
+}
+
+.share-link-popup p {
+  margin-bottom: 1rem;
+  color: #2c3e50;
+}
+
+.share-link-popup button {
+  background: linear-gradient(45deg, #3498db, #2980b9);
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.share-link-popup button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.error-message {
+  background-color: rgba(231, 76, 60, 0.1);
+  color: #e74c3c;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  margin-top: 1rem;
+  font-size: 0.875rem;
+  border: 1px solid rgba(231, 76, 60, 0.2);
+}
+
+@keyframes popIn {
+  0% {
+    transform: translate(-50%, -50%) scale(0.9);
+    opacity: 0;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
+}
+
+.card-suits {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.suit {
+  position: absolute;
+  font-size: 8rem;
+  opacity: 0.1;
+  animation: float 20s linear infinite;
+  color: white;
+}
+
+.suit:nth-child(1) {
+  top: 10%;
+  left: 10%;
+  animation-delay: 0s;
+}
+
+.suit:nth-child(2) {
+  top: 20%;
+  right: 20%;
+  animation-delay: -5s;
+  color: #ff4444;
+}
+
+.suit:nth-child(3) {
+  bottom: 15%;
+  left: 30%;
+  animation-delay: -10s;
+}
+
+.suit:nth-child(4) {
+  bottom: 25%;
+  right: 15%;
+  animation-delay: -15s;
+  color: #ff4444;
+}
+
+@keyframes float {
+  0% {
+    transform: translate(0, 0) rotate(0deg);
+    opacity: 0.1;
+  }
+  25% {
+    transform: translate(100px, 50px) rotate(90deg);
+    opacity: 0.2;
+  }
+  50% {
+    transform: translate(50px, 100px) rotate(180deg);
+    opacity: 0.1;
+  }
+  75% {
+    transform: translate(-50px, 50px) rotate(270deg);
+    opacity: 0.2;
+  }
+  100% {
+    transform: translate(0, 0) rotate(360deg);
+    opacity: 0.1;
+  }
+}
+
+.table-info {
+  margin: 1rem 0;
+  padding: 1rem;
+  background: rgba(44, 62, 80, 0.05);
+  border-radius: 0.5rem;
+}
+
+.table-info h2 {
+  font-size: 1.25rem;
+  color: #2c3e50;
+  margin-bottom: 0.5rem;
+  font-family: "Times New Roman", serif;
+}
+
+.table-info p {
+  color: #666;
+  font-size: 0.9rem;
 }

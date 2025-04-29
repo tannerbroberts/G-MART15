@@ -1,95 +1,195 @@
 // Import necessary modules
-import pg from 'pg';
-import Knex from 'knex';
-import dotenv from 'dotenv';
-import path from 'path';
+import mysql, {
+  Pool,
+  QueryError,
+  RowDataPacket,
+  ResultSetHeader,
+  PoolOptions,
+} from "mysql2";
+import Knex from "knex";
+import type { Knex as KnexType } from "knex";
+import dotenv from "dotenv";
+import path from "path";
 
 // Load environment variables
-dotenv.config({ path: path.resolve(__dirname, '../../../.env') });
+dotenv.config({ path: path.resolve(__dirname, "../../.env") });
 
-// PostgreSQL configuration helper
-const getConfig = () => {
+// Type definitions for database configuration
+type DatabaseConfig = {
+  uri?: string;
+  user?: string;
+  password?: string;
+  database?: string;
+  host?: string;
+  port?: number;
+  socketPath?: string;
+  connectTimeout?: number;
+  waitForConnections?: boolean;
+  connectionLimit?: number;
+  maxIdle?: number;
+  idleTimeout?: number;
+  queueLimit?: number;
+};
+
+// MySQL configuration helper
+const getConfig = (): DatabaseConfig => {
   if (process.env.DATABASE_URL) {
-    // For remote databases (like Heroku), ensure SSL is configured properly
-    return { 
-      connectionString: process.env.DATABASE_URL,
-      ssl: { rejectUnauthorized: false }
+    // For remote databases
+    return {
+      uri: process.env.DATABASE_URL,
     };
   } else {
     // For local development
-    return {
-      host: process.env.DB_HOST || 'localhost',
-      port: parseInt(process.env.DB_PORT || '5432', 10),
-      user: process.env.DB_USER || 'postgres',
-      password: process.env.DB_PASSWORD,
-      database: process.env.DB_DATABASE || 'blackjack',
+    const config: DatabaseConfig = {
+      user: process.env.DB_USER || "root",
+      password: process.env.DB_PASSWORD || "",
+      database: process.env.DB_DATABASE || "blackjack",
+      connectTimeout: 10000, // 10 seconds
+      waitForConnections: true,
+      connectionLimit: 10,
+      maxIdle: 10,
+      idleTimeout: 60000,
+      queueLimit: 0,
     };
+
+    // Use socket connection on macOS
+    if (process.platform === "darwin") {
+      return {
+        ...config,
+        socketPath: "/tmp/mysql.sock",
+      };
+    } else {
+      return {
+        ...config,
+        host: process.env.DB_HOST || "127.0.0.1",
+        port: parseInt(process.env.DB_PORT || "3306", 10),
+      };
+    }
   }
 };
 
 // Create a simple client for testing connection
 const createTestClient = () => {
-  return new pg.Client(getConfig());
+  const config = getConfig();
+  if (!config.password) {
+    console.error(
+      "⚠️ Warning: No database password set in environment variables!"
+    );
+  }
+  console.log("Database config:", {
+    ...config,
+    password: config.password ? "[REDACTED]" : "NOT SET",
+  });
+  return mysql.createConnection(config as PoolOptions);
 };
 
-// Create a PostgreSQL pool
+// Create a MySQL pool
 const createPool = () => {
-  const { Pool } = pg;
-  return new Pool(getConfig());
+  const config = getConfig();
+  if (!config.password) {
+    console.error(
+      "⚠️ Warning: No database password set in environment variables!"
+    );
+  }
+  console.log("Creating pool with config:", {
+    ...config,
+    password: config.password ? "[REDACTED]" : "NOT SET",
+  });
+  return mysql.createPool(config as PoolOptions);
 };
 
 // Create a Knex instance
 const createKnex = () => {
   return Knex({
-    client: 'pg',
+    client: "mysql2",
     connection: getConfig(),
-    pool: { min: 2, max: 10 }
+    pool: { min: 2, max: 10 },
   });
 };
 
 // Create instances
-const pool = createPool();
-const db = createKnex();
+let pool: Pool;
+let db: KnexType;
+
+try {
+  pool = createPool();
+  db = createKnex();
+} catch (error) {
+  console.error("Failed to create database instances:", error);
+  // Create empty instances to prevent crashes
+  pool = mysql.createPool({});
+  db = Knex({ client: "mysql2" });
+}
 
 // Query function
-const query = (text: string, params?: any[]) => {
-  return pool.query(text, params);
+const query = <T extends RowDataPacket[] | ResultSetHeader>(
+  text: string,
+  params?: any[]
+): Promise<T> => {
+  return new Promise((resolve, reject) => {
+    pool.query<T>(text, params, (err: QueryError | null, results: T) => {
+      if (err) reject(err);
+      else resolve(results);
+    });
+  });
 };
 
 // Database initialization function with better error handling
 const initDb = async (): Promise<void> => {
   // Use a separate client for testing, not the pool
   const client = createTestClient();
-  
+
   try {
-    await client.connect();
-    console.log('✅ Database connection successful');
-    
-    // Additional database info query
-    const result = await client.query('SELECT version(), current_database(), current_user');
-    console.log(`Connected to: ${result.rows[0].current_database}`);
-    console.log(`PostgreSQL version: ${result.rows[0].version.split(' ')[1]}`);
-    
-    await client.end();
-  } catch (err: any) {
-    console.error('❌ Database connection failed:', err.message);
-    
+    await new Promise<void>((resolve, reject) => {
+      client.connect((err: QueryError | null) => {
+        if (err) reject(err);
+        else resolve();
+      });
+    });
+    console.log("✅ Database connection successful");
+
+    // Simplified database info query for MySQL
+    const [result] = await new Promise<RowDataPacket[]>((resolve, reject) => {
+      client.query<RowDataPacket[]>(
+        "SELECT VERSION() as version, DATABASE() as current_database",
+        (err: QueryError | null, results: RowDataPacket[]) => {
+          if (err) reject(err);
+          else resolve(results);
+        }
+      );
+    });
+    console.log(`Connected to: ${result.current_database}`);
+    console.log(`MySQL version: ${result.version}`);
+
+    await new Promise<void>((resolve, reject) => {
+      client.end((err: QueryError | null) => {
+        if (err) reject(err);
+        else resolve();
+      });
+    });
+  } catch (err: unknown) {
+    console.error(
+      "❌ Database connection failed:",
+      err instanceof Error ? err.message : String(err)
+    );
+
     // Check for common error types and provide more helpful messages
-    if (err.code === '28000' || err.code === '28P01') {
-      console.error('Authentication failed. Please check your database credentials.');
-    } else if (err.code === 'ECONNREFUSED') {
-      console.error('Could not connect to the PostgreSQL server. Is it running?');
+    if (err instanceof Error) {
+      if (err.message.includes("ER_ACCESS_DENIED_ERROR")) {
+        console.error(
+          "Authentication failed. Please check your database credentials in the .env file."
+        );
+      } else if (err.message.includes("ECONNREFUSED")) {
+        console.error(
+          "Connection refused. Please ensure MySQL is running and the port is correct."
+        );
+      } else if (err.message.includes("ER_BAD_DB_ERROR")) {
+        console.error(
+          "Database does not exist. Please create the database first."
+        );
+      }
     }
-    
-    // Always try to clean up the client
-    try {
-      await client.end();
-    } catch (endErr) {
-      // Ignore errors when ending client after connection failure
-    }
-    
-    // Don't rethrow, just log the error - this allows server to start without DB
-    console.warn('Server will start despite database connection issues');
+    throw err;
   }
 };
 

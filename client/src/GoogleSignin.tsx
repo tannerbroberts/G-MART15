@@ -7,17 +7,17 @@ const GoogleSignin = () => {
   const handleGoogleLogin = () => {
     setIsLoading(true);
     // Get the base URL of the current environment
-    const apiUrl = process.env.NODE_ENV === 'production' 
-      ? '' // In production, use relative URLs (they'll go to same domain)
-      : 'http://localhost:3000'; // In dev, point to the Express server
-      
+    const API_URL = process.env.NODE_ENV === 'production'
+      ? 'https://g-mart15.com'
+      : 'http://localhost:3001'; // In dev, point to the Express server
+
     // Redirect to the Google OAuth route on our server
-    window.location.href = `${apiUrl}/auth/google`;
+    window.location.href = `${API_URL}/auth/google`;
   };
 
   return (
     <div className="google-signin-container">
-      <button 
+      <button
         onClick={handleGoogleLogin}
         disabled={isLoading}
         className="google-signin-button"
@@ -35,9 +35,9 @@ const GoogleSignin = () => {
           </>
         )}
       </button>
-      
+
       <p className="signin-info">
-        Your Google account will be used for authentication only. 
+        Your Google account will be used for authentication only.
         We do not store your Google password.
       </p>
     </div>
