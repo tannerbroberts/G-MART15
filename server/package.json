@@ -2,24 +2,32 @@
   "name": "server",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "src/index.ts",
   "engines": {
-    "node": "22.x"
+    "node": "22.x",
+    "npm": "10.x"
   },
   "scripts": {
-    "start": "node dist/index.js",
-    "dev": "ts-node src/index.ts",
-    "build": "tsc",
+    "start": "NODE_ENV=production node ./dist/index.js",
+    "dev": "ts-node-dev --respawn src/index.ts",
     "watch": "ts-node-dev --respawn src/index.ts",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "npx tsc -p tsconfig.deployment.json",
+    "test": "jest --forceExit",
+    "test:deployment": "node ./tests/deployment-test.js",
+    "postinstall": "npm run build"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@types/connect-pg-simple": "^7.0.3",
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.1",
+    "@types/express-session": "^1.18.1",
+    "@types/jsonwebtoken": "^9.0.9",
     "@types/node": "^22.14.0",
+    "@types/passport": "^1.0.17",
+    "@types/passport-google-oauth20": "^2.0.16",
     "connect-pg-simple": "^10.0.0",
     "cors": "^2.8.5",
     "dotenv": "^16.5.0",
@@ -31,14 +39,10 @@
     "passport-google-oauth20": "^2.0.0",
     "pg": "^8.15.0",
     "ts-node": "^10.9.2",
-    "typescript": "^5.8.3"
+    "typescript": "^5.8.3",
+    "ts-node-dev": "^2.0.0"
   },
   "devDependencies": {
-    "@types/connect-pg-simple": "^7.0.3",
-    "@types/express-session": "^1.18.1",
-    "@types/jsonwebtoken": "^9.0.9",
-    "@types/passport": "^1.0.17",
-    "@types/passport-google-oauth20": "^2.0.16",
     "concurrently": "^9.1.2",
     "ts-node-dev": "^2.0.0"
   }
