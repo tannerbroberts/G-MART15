@@ -1,14 +1,9 @@
 import './loginpage.css';
 import fannedcards from './fannedcards.png';
-<<<<<<< HEAD
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
 import GoogleSignin from './GoogleSignin';
-=======
-
-import './LoginPage.css';
->>>>>>> d8880f36bcbeaa4ba59d28f2161cd4e3c3054bb2
 
 const LoginPage = () => {
   const { isAuthenticated } = useAuth();
