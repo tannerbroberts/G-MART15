@@ -8,20 +8,18 @@
     "jsx": "react-jsx",
     "skipLibCheck": true,
 
-    /* Bundler mode */
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
     "isolatedModules": true,
     "moduleDetection": "force",
     "noEmit": true,
 
-    /* Linting */
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true,
-    "noEmitOnError": false // Added to allow build with TypeScript errors
+    "noEmitOnError": false
   },
   "include": ["src"]
 }

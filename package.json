@@ -11,6 +11,8 @@
       "db:setup": "node ./scripts/setup-database.js",
       "MaggieSays": "npm install && cd client && npm install && cd ../server && npm install",
       "deploy:heroku": "git push heroku main",
+      "deploy:heroku:subtree": "git subtree push --prefix server heroku main",
+      "deploy:heroku:force": "git push heroku `git subtree split --prefix server main`:main --force",
       "heroku-postbuild": "npm run MaggieSays && npm run build && npm run db:setup"
    },
    "engines": {

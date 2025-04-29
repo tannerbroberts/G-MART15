@@ -47,6 +47,7 @@ jobs:
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
           heroku_app_name: "gmart15-blackjack-express"
           heroku_email: "tannerbroberts@gmail.com"
+          appdir: "server"  # Points to the server directory in the project
           # Health check ensures the deployment was successful
           healthcheck: "https://gmart15-blackjack-express-1946fea61846.herokuapp.com/api/check"
           checkstring: "Backend is live!"

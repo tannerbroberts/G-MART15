@@ -43,6 +43,7 @@
     "ts-node-dev": "^2.0.0"
   },
   "devDependencies": {
-    "concurrently": "^9.1.2"
+    "concurrently": "^9.1.2",
+    "ts-node-dev": "^2.0.0"
   }
 }
