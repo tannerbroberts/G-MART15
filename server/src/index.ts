@@ -171,11 +171,11 @@ if (isProduction) {
   // Try to serve static files
   app.use(express.static(clientDistPath));
   
-  // Set up a route to deliver the React app for any requests not handled by the API
-  app.get("*", (req: Request, res: Response) => {
-    // Skip API routes
-    if (req.path.startsWith('/api') || req.path.startsWith('/auth')) {
-      return res.status(404).send('API endpoint not found');
+  // Define a middleware function separately to avoid TypeScript errors
+  const serveIndexHtml = (req: any, res: any, next: any) => {
+    // Skip API and auth routes
+    if (req.path.startsWith('/api/') || req.path.startsWith('/auth/')) {
+      return next();
     }
     
     try {
@@ -188,12 +188,16 @@ if (isProduction) {
       }
     } catch (err) {
       console.error('Error serving index.html:', err);
-      res.status(500).send('Error loading application');
+      return res.status(500).send('Error loading application');
     }
-  });
+  };
+  
+  // Apply the middleware to all routes
+  app.get('/*', serveIndexHtml);
+  
 } else {
   // In development, we'll let the React dev server handle client-side routing
-  app.get("/", (_req: Request, res: Response) => {
+  app.get("/", function(_req, res) {
     res.json({ message: "API server running - React app is being served by Vite on http://localhost:5173" });
   });
 }
