@@ -224,8 +224,8 @@ app.get('/auth/google/callback',
 );
 
 // FIX: Define a route specifically for handling the problematic URL path
-// Use correct TypeScript type for router handler
-app.get('/git.new*', function gitNewHandler(req: Request, res: Response) {
+// Use correct TypeScript type for router handler and named function to avoid type errors
+app.get('/git.new*', function gitNewHandler(req: Request, res: Response): void {
   const fullPath = `https://${req.path.substring(1)}`; // Remove leading slash and prepend https://
   console.log(`🔄 Redirecting from /git.new* path to: ${fullPath}`);
   res.redirect(fullPath);
