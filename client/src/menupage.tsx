@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import './loginpage.css';
 import fannedcards from './fannedcards.png';
 import UserStats from './UserStats';
-import PublicGamesList from './PublicGamesList';
 
 const MenuPage = () => {
     const navigate = useNavigate();
