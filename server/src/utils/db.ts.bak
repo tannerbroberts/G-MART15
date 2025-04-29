@@ -1,0 +1,46 @@
+import { Pool } from 'pg';
+import dotenv from 'dotenv';
+import knex from 'knex';
+
+// Load environment variables
+dotenv.config();
+
+// Create a PostgreSQL connection pool
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL || undefined,
+  host: process.env.DB_HOST || 'localhost',
+  port: parseInt(process.env.DB_PORT || '5432'),
+  user: process.env.DB_USER || 'postgres',
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_DATABASE || 'blackjack',
+});
+
+// Create a knex instance using the same connection settings
+export const db = knex({
+  client: 'pg',
+  connection: process.env.DATABASE_URL || {
+    host: process.env.DB_HOST || 'localhost',
+    port: parseInt(process.env.DB_PORT || '5432'),
+    user: process.env.DB_USER || 'postgres',
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_DATABASE || 'blackjack',
+  }
+});
+
+// Query helper function
+export const query = (text: string, params?: any[]) => pool.query(text, params);
+
+// Initialize database function
+export const initDb = async (): Promise<void> => {
+  try {
+    // Test connection
+    await pool.query('SELECT NOW()');
+    console.log('Database connection established');
+  } catch (err) {
+    console.error('Database connection failed:', err);
+    throw err;
+  }
+};
+
+// Export the pool as default for session store
+export default pool;
