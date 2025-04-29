@@ -1,0 +1,84 @@
+# G-MART15 Blackjack CI/CD Workflow
+# ------------------------------------------------------------------------------
+# This workflow automatically deploys the application when code is pushed to main
+# The deployment includes:
+# - Checking out the code
+# - Installing dependencies
+# - Running tests
+# - Deploying backend to Heroku and verifying it's working
+# - (Future enhancement: Deploy frontend to Vercel)
+
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main  # Trigger on pushes to main branch
+
+# Environment variables available to all jobs
+env:
+  NODE_VERSION: '18'  # Explicitly set Node.js version
+
+jobs:
+  deploy-backend:
+    name: Deploy Backend to Heroku
+    runs-on: ubuntu-latest
+    steps:
+      # Step 1: Checkout repository
+      - name: Checkout code
+        uses: actions/checkout@v3  # Updated to v3 for better security and features
+      
+      # Step 2: Setup Node.js environment
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'  # Cache npm dependencies for faster builds
+      
+      # Step 3: Install Heroku CLI
+      - name: Install Heroku CLI
+        run: |
+          curl https://cli-assets.heroku.com/install.sh | sh
+      
+      # Step 4: Deploy to Heroku
+      - name: Deploy to Heroku
+        uses: akhileshns/heroku-deploy@v3.14.15
+        with:
+          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+          heroku_app_name: "gmart15-blackjack-express"
+          heroku_email: "tannerbroberts@gmail.com"
+          appdir: "server"  # Points to the server directory in the project
+          # Health check ensures the deployment was successful
+          healthcheck: "https://gmart15-blackjack-express-1946fea61846.herokuapp.com/api/check"
+          checkstring: "Backend is live!"
+          rollbackonhealthcheckfailed: true
+      
+      # Step 5: Run database migrations if needed
+      - name: Run database migrations
+        run: heroku run npx knex migrate:latest --app gmart15-blackjack-express
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+
+  # Uncomment and configure once Vercel deployment is needed
+  # deploy-frontend:
+  #   name: Deploy Frontend to Vercel
+  #   needs: deploy-backend  # Only deploy frontend after backend is successfully deployed
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v3
+  #     - name: Setup Node.js
+  #       uses: actions/setup-node@v3
+  #       with:
+  #         node-version: ${{ env.NODE_VERSION }}
+  #         cache: 'npm'
+  #     - name: Install dependencies
+  #       run: cd client && npm ci
+  #     - name: Deploy to Vercel
+  #       uses: amondnet/vercel-action@v20
+  #       with:
+  #         vercel-token: ${{ secrets.VERCEL_TOKEN }}
+  #         vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+  #         vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+  #         vercel-args: '--prod'
+  #         working-directory: ./client

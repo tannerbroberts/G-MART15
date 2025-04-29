@@ -1,10 +1,26 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './loginpage.css';
 import fannedcards from './fannedcards.png';
 import UserStats from './UserStats';
 import PublicGamesList from './PublicGamesList';
 
-const menuPage = () => {
+const MenuPage = () => {
+    const navigate = useNavigate();
+    const [loading, setLoading] = useState(false);
+
+    const handleNewGame = async () => {
+        setLoading(true);
+        try {
+            // Add game creation logic here
+            navigate('/game');
+        } catch (error) {
+            console.error('Failed to create game:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
     return (
       <>
         <div className="textcontainer">
@@ -15,13 +31,23 @@ const menuPage = () => {
         gamesPlayed="—"
       />
         </div>
-        <button className="menubutton" onClick={() => { /* new game set up code */ }}>
-            New Game
+        <button 
+            className="menubutton" 
+            onClick={handleNewGame}
+            disabled={loading}
+        >
+            {loading ? 'Creating...' : 'New Game'}
         </button>
-        <button className="menubutton" onClick={() => { /* join game set up code */ }}>
+        <button 
+            className="menubutton" 
+            onClick={() => navigate('/join-game')}
+        >
             Join Game
         </button>
-        <button className="menubutton" onClick={() => { /* profile code */ }}>
+        <button 
+            className="menubutton" 
+            onClick={() => navigate('/profile')}
+        >
             Profile
         </button>
         <img src={fannedcards} alt="Image of fanned out cards" className="fannedcardsimage" />
@@ -29,4 +55,4 @@ const menuPage = () => {
     );
   };
 
-export default menuPage;
+export default MenuPage;

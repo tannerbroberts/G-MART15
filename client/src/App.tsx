@@ -1,17 +1,6 @@
-<<<<<<< HEAD
 import './App.css'
-<<<<<<< HEAD
-import LoginPage from './LoginPage';
-import MenuPage from './MenuPage';
-import UsernamePage from './usernamepage';
-import JoinGamePage from './joingamepage';
-=======
-import GoogleSignin from './GoogleSignin'
-=======
->>>>>>> d8880f36bcbeaa4ba59d28f2161cd4e3c3054bb2
 import React, { useState, useCallback } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import './App.css';
 import LoginPage from './loginpage';
 import CardSelector from './components/CardSelector';
 import CardTable from './components/CardTable';
@@ -19,16 +8,12 @@ import PipPlacementGenerator from './components/PipPlacementGenerator';
 import { initialCards } from './initialCards';
 import { handleCardClick } from './utils';
 import { PipPlacementMap } from './cardGenerator';
-<<<<<<< HEAD
 import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import AuthCallback from './pages/AuthCallback';
 import MenuPage from './menupage';
 import JoinGamePage from './joingamepage';
 import UsernamePage from './usernamepage';
->>>>>>> main
-=======
->>>>>>> d8880f36bcbeaa4ba59d28f2161cd4e3c3054bb2
 
 const GameComponent: React.FC = () => {
   const [cards, setCards] = useState(initialCards);

@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './textboxpages.css';
 import fannedcards from './fannedcards.png';
-import { useNavigate } from 'react-router-dom';
 
-function joinOrCreateTable(tableID) {
+function joinOrCreateTable(tableID: string) {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
         // FAKE RULES
