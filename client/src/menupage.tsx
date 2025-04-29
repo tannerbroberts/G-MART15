@@ -1,12 +1,19 @@
 import React, { useState } from 'react';
 import './loginpage.css';
 import fannedcards from './fannedcards.png';
+import UserStats from './UserStats';
+import PublicGamesList from './PublicGamesList';
 
 const menuPage = () => {
     return (
       <>
         <div className="textcontainer">
           <h1>BLACKJACK</h1>
+          <UserStats
+        username="Loading..."
+        totalWinnings="—"
+        gamesPlayed="—"
+      />
         </div>
         <button className="menubutton" onClick={() => { /* new game set up code */ }}>
             New Game
