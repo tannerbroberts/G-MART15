@@ -16,12 +16,14 @@ authRouter.get('/google',
 
 authRouter.get('/google/callback',
   passport.authenticate('google', { failureRedirect: '/' }),
+  // Fix: Properly type the callback function so TypeScript knows it returns void
   ((req: Request, res: Response, next: NextFunction) => {
     try {
       const authReq = req as AuthRequest;
       
       if (!authReq.user) {
-        return res.redirect('/login?error=authentication-failed');
+        res.redirect('/login?error=authentication-failed');
+        return;
       }
       
       const token = jwt.sign(
@@ -43,7 +45,7 @@ authRouter.get('/google/callback',
     } catch (error) {
       next(error);
     }
-  }) as RequestHandler
+  }) as express.RequestHandler
 );
 
 // Status route with error handling
@@ -52,31 +54,33 @@ authRouter.get('/status', ((req: Request, res: Response, next: NextFunction) => 
     const isAuthenticated = req.isAuthenticated?.();
     
     if (isAuthenticated) {
-      return res.json({ 
+      res.json({ 
         isAuthenticated: true, 
         user: req.user 
       });
+      return;
     } else {
-      return res.json({ isAuthenticated: false });
+      res.json({ isAuthenticated: false });
+      return;
     }
   } catch (error) {
     next(error);
   }
-}) as RequestHandler);
+}) as express.RequestHandler);
 
 // Logout route with error handling
 authRouter.post('/logout', ((req: Request, res: Response, next: NextFunction) => {
   try {
     req.logout((err) => {
       if (err) { 
-        return res.status(500).json({ message: 'Logout failed' }); 
+        res.status(500).json({ message: 'Logout failed' });
       } else {
-        return res.json({ message: 'Logged out successfully' });
+        res.json({ message: 'Logged out successfully' });
       }
     });
   } catch (error) {
     next(error);
   }
-}) as RequestHandler);
+}) as express.RequestHandler);
 
 export default authRouter;

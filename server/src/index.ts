@@ -112,7 +112,7 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 
 // FIX: Handle potential path-to-regexp error with URLs in route paths
 // This middleware safely handles redirection to external URLs
-app.use((req, res, next) => {
+app.use((req: Request, res: Response, next: NextFunction) => {
   // Check if this is a request that's trying to use a URL as a path
   if (req.path.startsWith('/https:/') || req.path.startsWith('/http:/')) {
     const actualUrl = req.path.substring(1); // Remove the leading slash
@@ -224,7 +224,8 @@ app.get('/auth/google/callback',
 );
 
 // FIX: Define a route specifically for handling the problematic URL path
-app.get('/git.new*', (req: Request, res: Response) => {
+// Use correct TypeScript type for router handler
+app.get('/git.new*', function gitNewHandler(req: Request, res: Response) {
   const fullPath = `https://${req.path.substring(1)}`; // Remove leading slash and prepend https://
   console.log(`🔄 Redirecting from /git.new* path to: ${fullPath}`);
   res.redirect(fullPath);
