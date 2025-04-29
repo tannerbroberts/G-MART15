@@ -1,11 +1,11 @@
 {
    "scripts": {
       "client:dev": "cd client && npm run dev",
-      "client:build": "cd client && npm run build",
+      "client:build": "cd client && npm install && npx vite build",
       "server:dev": "cd server && npm run dev",
       "server:watch": "cd server && npm run watch",
       "start": "cd server && npm start",
-      "build": "cd server && npm install && npm run build && cd ../client && npm install && npm run build",
+      "build": "cd server && npm install && npm run build && cd ../client && npm install && npx vite build",
       "server:build": "cd server && npm run build",
       "serve": "cd server && node dist/index.js",
       "db:setup": "node ./scripts/setup-database.js",
@@ -27,6 +27,7 @@
    "dependencies": {
       "dotenv": "^16.5.0",
       "pg": "^8.14.1",
-      "typescript": "^5.8.3"
+      "typescript": "^5.8.3",
+      "vite": "^6.2.0"
    }
 }
