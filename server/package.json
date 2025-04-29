@@ -11,10 +11,10 @@
     "start": "NODE_ENV=production node ./dist/index.js",
     "dev": "ts-node-dev --respawn src/index.ts",
     "watch": "ts-node-dev --respawn src/index.ts",
-    "build": "npx tsc -p tsconfig.deployment.json && mkdir -p dist/client",
-    "build:client": "cd ../client && npm install && npx vite build",
-    "heroku-postbuild": "npm install --no-save typescript && npm run build && cd ../client && npm install && npx vite build && cp -r dist/* ../server/dist/client/",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "npx tsc -p tsconfig.deployment.json",
+    "test": "jest --forceExit",
+    "test:deployment": "node ./tests/deployment-test.js",
+    "postinstall": "npm run build"
   },
   "keywords": [],
   "author": "",

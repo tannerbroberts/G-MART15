@@ -19,18 +19,50 @@ dotenv_1.default.config();
 const app = (0, express_1.default)();
 const PORT = process.env.PORT || 3000;
 const isProduction = process.env.NODE_ENV === 'production';
-// Unhandled promise rejection handler
+// Enhanced error handling for production
 process.on('unhandledRejection', (reason, promise) => {
     console.error('Unhandled Promise Rejection:', reason);
-    // Don't exit the process, just log it
+    // Log additional context in production
+    if (isProduction) {
+        console.error('Promise details:', promise);
+        console.error('Timestamp:', new Date().toISOString());
+    }
 });
-// Initialize the database
+// Add global exception handler
+process.on('uncaughtException', (error) => {
+    console.error('Uncaught Exception:', error);
+    console.error('Timestamp:', new Date().toISOString());
+    // Don't exit in production, but log it thoroughly
+    if (!isProduction) {
+        process.exit(1); // Only exit in development
+    }
+});
+// Initialize the database with enhanced logging
 (0, db_1.initDb)()
-    .then(() => console.log('Database initialized successfully'))
+    .then(() => console.log(`✅ Database initialized successfully - ${new Date().toISOString()}`))
     .catch((err) => {
-    console.error("Database initialization failed:", err);
-    // Don't exit the process, allow server to start anyway
+    console.error("❌ Database initialization failed:", err);
+    console.error("Error details:", JSON.stringify({
+        message: err.message,
+        name: err.name,
+        stack: isProduction ? 'Omitted in production' : err.stack
+    }));
     console.warn("Server starting despite database connection failure");
+});
+// Request logging middleware
+app.use((req, res, next) => {
+    // Skip logging for health check endpoints in production to avoid cluttering logs
+    if (isProduction && req.path === '/api/check') {
+        return next();
+    }
+    console.log(`${new Date().toISOString()} - ${req.method} ${req.path} - IP: ${req.ip}`);
+    // Log response when it's sent
+    res.on('finish', () => {
+        const statusCode = res.statusCode;
+        const logMethod = statusCode >= 400 ? console.error : console.log;
+        logMethod(`${new Date().toISOString()} - Response: ${statusCode} - ${req.method} ${req.path}`);
+    });
+    next();
 });
 // CORS configuration for development
 if (!isProduction) {
@@ -83,23 +115,29 @@ app.use('/auth', auth_1.default);
 app.get('/auth/google', passport_1.default.authenticate('google', { scope: ['profile', 'email'] }));
 // Fix the TypeScript error in the Google auth callback route
 app.get('/auth/google/callback', passport_1.default.authenticate('google', { session: false, failureRedirect: '/' }), (req, res) => {
-    // Extend req.user type to include id
-    const user = req.user;
-    console.log('Google auth callback - profile:', user ? user.displayName : 'Not available');
-    // Check if user exists before accessing properties
-    if (!user || !user.id) {
-        console.error('Authentication failed - user object invalid');
-        return res.redirect('/login?error=authentication-failed');
+    try {
+        // Extend req.user type to include id
+        const user = req.user;
+        console.log('Google auth callback - profile:', user ? user.displayName : 'Not available');
+        // Check if user exists before accessing properties
+        if (!user || !user.id) {
+            console.error('Authentication failed - user object invalid');
+            return res.redirect('/login?error=authentication-failed');
+        }
+        // Generate JWT token for frontend authentication
+        const token = jsonwebtoken_1.default.sign({ id: user.id }, process.env.JWT_SECRET || 'dev-secret-key', { expiresIn: '1h' });
+        // Redirect to frontend with token
+        // In production, we're handling the frontend on the same domain through Express
+        const redirectUrl = isProduction
+            ? `/auth/callback?token=${token}` // Same domain in production
+            : `http://localhost:5173/auth/callback?token=${token}`; // Separate domain in dev
+        console.log(`Redirecting to: ${redirectUrl}`);
+        return res.redirect(redirectUrl);
     }
-    // Generate JWT token for frontend authentication
-    const token = jsonwebtoken_1.default.sign({ id: user.id }, process.env.JWT_SECRET || 'dev-secret-key', { expiresIn: '1h' });
-    // Redirect to frontend with token
-    // In production, we're handling the frontend on the same domain through Express
-    const redirectUrl = isProduction
-        ? `/auth/callback?token=${token}` // Same domain in production
-        : `http://localhost:5173/auth/callback?token=${token}`; // Separate domain in dev
-    console.log(`Redirecting to: ${redirectUrl}`);
-    return res.redirect(redirectUrl);
+    catch (error) {
+        console.error('Error in Google auth callback:', error);
+        return res.redirect('/login?error=server-error');
+    }
 });
 // API health check endpoint
 app.get("/api/check", (_req, res) => {

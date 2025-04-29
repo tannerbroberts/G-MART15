@@ -17,9 +17,12 @@ authRouter.get('/google/callback', passport_1.default.authenticate('google', { f
     }
     const token = jsonwebtoken_1.default.sign({ id: user.id }, process.env.JWT_SECRET || 'dev-secret-key', { expiresIn: '1h' });
     const isProduction = process.env.NODE_ENV === 'production';
+    // In production, both frontend and backend are on the same domain
+    // So we can use a relative path for the redirect
     const redirectUrl = isProduction
-        ? `${process.env.FRONTEND_URL || 'https://your-frontend.vercel.app'}/auth/callback?token=${token}`
-        : `http://localhost:5173/auth/callback?token=${token}`;
+        ? `/auth/callback?token=${token}` // Same domain in production
+        : `http://localhost:5173/auth/callback?token=${token}`; // Separate domains in dev
+    console.log(`Redirecting to: ${redirectUrl}`);
     res.redirect(redirectUrl);
 }));
 // Status route
