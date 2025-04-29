@@ -223,12 +223,17 @@ app.get('/auth/google/callback',
   }
 );
 
-// FIX: Define a route specifically for handling the problematic URL path
-// Use correct TypeScript type for router handler and named function to avoid type errors
-app.get('/git.new*', function gitNewHandler(req: Request, res: Response): void {
-  const fullPath = `https://${req.path.substring(1)}`; // Remove leading slash and prepend https://
-  console.log(`🔄 Redirecting from /git.new* path to: ${fullPath}`);
-  res.redirect(fullPath);
+// FIX: Handle URL paths that cause path-to-regexp errors
+// Instead of defining a specific route that TypeScript has issues with,
+// use this more general middleware approach
+app.use((req: Request, res: Response, next: NextFunction) => {
+  // Check for paths that might cause path-to-regexp errors
+  if (req.path.startsWith('/git.new')) {
+    const fullPath = `https:${req.path.substring(1)}`; // Remove leading slash and add https:
+    console.log(`🔄 Redirecting from problematic path to: ${fullPath}`);
+    return res.redirect(fullPath);
+  }
+  next();
 });
 
 /**
