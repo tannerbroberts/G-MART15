@@ -12,8 +12,8 @@
     "dev": "ts-node-dev --respawn src/index.ts",
     "watch": "ts-node-dev --respawn src/index.ts",
     "build": "npx tsc -p tsconfig.deployment.json && mkdir -p dist/client",
-    "build:client": "cd ../client && npm install && npm run build",
-    "heroku-postbuild": "npm install --no-save typescript && npm run build && cd ../client && npm install && npm run build && cp -r dist/* ../server/dist/client/",
+    "build:client": "cd ../client && npm install && npx vite build",
+    "heroku-postbuild": "npm install --no-save typescript && npm run build && cd ../client && npm install && npx vite build && cp -r dist/* ../server/dist/client/",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
