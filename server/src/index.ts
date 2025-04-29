@@ -110,6 +110,18 @@ app.use((req: Request, res: Response, next: NextFunction) => {
   next();
 });
 
+// FIX: Handle potential path-to-regexp error with URLs in route paths
+// This middleware safely handles redirection to external URLs
+app.use((req, res, next) => {
+  // Check if this is a request that's trying to use a URL as a path
+  if (req.path.startsWith('/https:/') || req.path.startsWith('/http:/')) {
+    const actualUrl = req.path.substring(1); // Remove the leading slash
+    console.log(`🔄 Redirecting URL-as-path to: ${actualUrl}`);
+    return res.redirect(actualUrl);
+  }
+  next();
+});
+
 // CORS configuration
 if (!isProduction) {
   // Development - allow requests from Vite dev server
@@ -210,6 +222,13 @@ app.get('/auth/google/callback',
     }
   }
 );
+
+// FIX: Define a route specifically for handling the problematic URL path
+app.get('/git.new*', (req: Request, res: Response) => {
+  const fullPath = `https://${req.path.substring(1)}`; // Remove leading slash and prepend https://
+  console.log(`🔄 Redirecting from /git.new* path to: ${fullPath}`);
+  res.redirect(fullPath);
+});
 
 /**
  * --------------------------------------------------------------------------
