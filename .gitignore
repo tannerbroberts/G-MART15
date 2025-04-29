@@ -1,4 +1,54 @@
-node_modules
+# Node.js dependencies
+node_modules/
+npm-debug.log
+yarn-error.log
+.pnp
+.pnp.js
+
+# Build outputs
+/client/dist
+/client/build
+/server/build
+/server/dist
+
+# Environment files
 .env
-client/node_modules
-client/dist
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Editor directories and files
+.idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Testing
+/coverage
+
+# Logs
+logs
+*.log
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Prevent subdirectory git repositories
+/client/.git
+/server/.git
+/client/.gitignore
+/server/.gitignore

@@ -1,2 +1,10 @@
+# Heroku Procfile - Defines process types and commands for the G-MART15 backend
+# ------------------------------------------------------------------------------
+# web: The main web server process that handles HTTP requests
+#      Uses the start script defined in package.json (typically runs node dist/index.js)
+# release: Commands to run automatically when a new version is deployed
+#          This ensures database migrations run before the new release goes live
+# ------------------------------------------------------------------------------
+
 web: npm start
 release: npx knex migrate:latest
