@@ -21,13 +21,9 @@ if (!clientId || !clientSecret) {
 
 // Environment specific callback URL
 const isProduction = process.env.NODE_ENV === 'production';
-// Use environment variable for callback URL to avoid hardcoding
-const herokuAppUrl = process.env.HEROKU_APP_URL || 'https://gmart15-blackjack-express.herokuapp.com';
 const callbackURL = isProduction
-  ? `${herokuAppUrl}/auth/google/callback`
+  ? `${process.env.FRONTEND_URL || 'https://gmart15-blackjack-express-1946fea61846.herokuapp.com'}/auth/google/callback`
   : 'http://localhost:3000/auth/google/callback';
-
-console.log(`Google OAuth callback URL: ${callbackURL}`);
 
 const configurePassport = () => {
   // Serialize user to session
