@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 
 
 /**
@@ -26,24 +26,34 @@ function useFetch<T = any>(url: string, options: RequestInit = {}): UseFetchResu
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
+  const mountedRef = useRef(true)
+  useEffect(() => {
+    const unMount = () => {
+      mountedRef.current = false
+    }
+    return unMount
+  }, [])
+
   const fetchData = useCallback(async (overrideOptions: Partial<RequestInit> = {}): Promise<T> => {
     setLoading(true);
     setError(null);
     
     try {
       const response = await fetch(url, { ...options, ...overrideOptions });
-      
+
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
-      
+
       const result = await response.json() as T;
-      setState(result);
+      if (mountedRef.current) setState(result);
       return result;
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'An error occurred during the fetch operation';
-      setError(errorMessage);
-      setState(null);
+      if (mountedRef.current) {
+        setError(errorMessage);
+        setState(null);
+      }
       throw err;
     } finally {
       setLoading(false);
@@ -51,25 +61,26 @@ function useFetch<T = any>(url: string, options: RequestInit = {}): UseFetchResu
   }, [url, options]);
 
   // Initial fetch on mount or when dependencies change
-  useEffect(() => {
+  const startFetch = () => {
     if (url) {
       fetchData().catch(err => {
         // Error is already handled in fetchData, this just prevents unhandled promise rejection
         console.error('Fetch error caught in useEffect:', err);
       });
     }
-  }, [url, fetchData]);
+  }
+  useEffect(startFetch, [url, fetchData]);
 
   // Return the refetch function to allow manual refetching
   const refetch = useCallback((overrideOptions: Partial<RequestInit> = {}) => {
     return fetchData(overrideOptions);
   }, [fetchData]);
 
-  return { 
-    data: state, 
-    loading, 
-    error, 
-    refetch 
+  return {
+    data: state,
+    loading,
+    error,
+    refetch
   };
 }
 
