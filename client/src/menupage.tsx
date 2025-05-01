@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './loginpage.css';
 import fannedcards from './fannedcards.png';
-import UserStats from './UserStats';
+import { UserStats } from './UserStats';
 
 const MenuPage = () => {
     const navigate = useNavigate();
