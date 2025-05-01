@@ -4,7 +4,7 @@ set -e  # Exit immediately if any command fails
 # ------------------------------------------------------------------------------
 # Subdirectory Git Repository Cleanup Script
 # ------------------------------------------------------------------------------
-# Purpose: Clean up Git repositories from subdirectories to support monorepo approach
+# Purpose: Clean up Git repositories from subdirectories to ensure proper repository structure
 # ------------------------------------------------------------------------------
 
 echo "===== CLEANING UP SUBDIRECTORY GIT REPOSITORIES ====="
@@ -31,10 +31,9 @@ cleanup_subdir() {
   fi
 }
 
-# Clean up client and server directories
+# Clean up client directory
 cleanup_subdir "client"
-cleanup_subdir "server"
 
 echo ""
-echo "🎉 Cleanup complete! This repository is now properly set up as a monorepo."
+echo "🎉 Cleanup complete! This repository is now properly set up for the client-only structure."
 echo "ℹ️  Remember: Only commit to the main repository, not to subdirectories."
