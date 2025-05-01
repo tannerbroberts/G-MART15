@@ -2,14 +2,14 @@
  * G-MART15 Blackjack Server
  * ------------------------------------------------------------------------------
  * Main server entry point for the Express.js backend.
- * 
+ *
  * Architecture Overview:
  * - Express.js web server with TypeScript
  * - PostgreSQL database with Knex query builder
  * - Passport.js for Google OAuth authentication
  * - JWT for frontend authentication
  * - Session management with connect-pg-simple
- * 
+ *
  * Deployment: This server is deployed to Heroku and serves the React frontend
  * in production, while in development the frontend is served by Vite.
  */
@@ -58,7 +58,7 @@ process.on('unhandledRejection', (reason, promise) => {
 process.on('uncaughtException', (error) => {
   console.error('🚨 Uncaught Exception:', error);
   console.error('Timestamp:', new Date().toISOString());
-  
+
   // Only exit in development - production should try to recover
   if (!isProduction) {
     process.exit(1);
@@ -95,10 +95,10 @@ app.use((req: Request, res: Response, next: NextFunction) => {
   if (isProduction && req.path === '/api/check') {
     return next();
   }
-  
+
   const startTime = Date.now();
   console.log(`📥 ${new Date().toISOString()} - ${req.method} ${req.path} - IP: ${req.ip}`);
-  
+
   // Log response when sent
   res.on('finish', () => {
     const duration = Date.now() - startTime;
@@ -106,7 +106,7 @@ app.use((req: Request, res: Response, next: NextFunction) => {
     const logMethod = statusCode >= 400 ? console.error : console.log;
     logMethod(`📤 ${new Date().toISOString()} - Response: ${statusCode} - ${req.method} ${req.path} (${duration}ms)`);
   });
-  
+
   next();
 });
 
@@ -196,24 +196,24 @@ app.get('/auth/google/callback',
     try {
       // Type assertion for user object with required id field
       const user = req.user as { id: number } | undefined;
-      
+
       if (!user || !user.id) {
         console.error('Authentication failed - invalid user object:', user);
         return res.redirect('/login?error=authentication-failed');
       }
-      
+
       // Generate JWT token for frontend authentication
       const token = jwt.sign(
-        { id: user.id }, 
+        { id: user.id },
         JWT_SECRET,
         { expiresIn: '1h' }
       );
-      
+
       // Redirect with token - different paths for dev vs production
       const redirectUrl = isProduction
         ? `/auth/callback?token=${token}`
         : `http://localhost:5173/auth/callback?token=${token}`;
-        
+
       console.log(`✅ Authentication successful, redirecting to: ${redirectUrl}`);
       return res.redirect(redirectUrl);
     } catch (error) {
@@ -267,7 +267,7 @@ if (isProduction) {
     path.join(__dirname, '../dist'),
     path.join(__dirname, '../dist/client')
   ];
-  
+
   // Find the first path that exists
   let clientDistPath: string | null = null;
   for (const testPath of possiblePaths) {
@@ -281,24 +281,24 @@ if (isProduction) {
       // Ignore errors checking paths
     }
   }
-  
+
   // Fallback path if none of the above exist
   if (!clientDistPath) {
     console.error('❌ Could not find static file directory!');
     clientDistPath = path.join(process.cwd(), 'dist');
     console.log(`Using fallback path: ${clientDistPath}`);
   }
-  
+
   // Serve static files
   app.use(express.static(clientDistPath));
-  
+
   // Serve index.html for all non-API routes (client-side routing)
   const serveIndexHtml = (req: Request, res: Response, next: NextFunction) => {
     // Skip API and auth routes
     if (req.path.startsWith('/api/') || req.path.startsWith('/auth/')) {
       return next();
     }
-    
+
     try {
       const indexPath = path.join(clientDistPath, "index.html");
       if (require('fs').existsSync(indexPath)) {
@@ -312,13 +312,13 @@ if (isProduction) {
       return res.status(500).send('Error loading application');
     }
   };
-  
-  app.get('/*', serveIndexHtml);
-  
+
+  app.get('/*splat', serveIndexHtml);
+
 } else {
   // Development message
   app.get("/", (_req: Request, res: Response) => {
-    res.json({ 
+    res.json({
       message: "API server running - React app is being served separately by Vite",
       clientUrl: "http://localhost:5173"
     });
@@ -332,15 +332,15 @@ if (isProduction) {
  */
 app.use((err: Error, req: Request, res: Response, _next: NextFunction) => {
   console.error('❌ Server error:', err);
-  
+
   // Log additional details in production
   if (isProduction) {
     console.error('Request path:', req.path);
     console.error('Request body:', req.body);
     console.error('Timestamp:', new Date().toISOString());
   }
-  
-  res.status(500).json({ 
+
+  res.status(500).json({
     message: 'Internal server error',
     requestId: req.ip + '-' + Date.now()  // Helps correlate user reports with logs
   });
@@ -354,13 +354,13 @@ app.use((err: Error, req: Request, res: Response, _next: NextFunction) => {
 app.listen(PORT, () => {
   console.log(`\n🚀 Server running on port ${PORT}`);
   console.log(`🔧 Environment: ${isProduction ? 'PRODUCTION' : 'DEVELOPMENT'}`);
-  
+
   if (isProduction) {
     console.log(`🌐 Frontend served from static files`);
   } else {
     console.log(`🌐 Frontend URL: http://localhost:5173`);
   }
-  
+
   console.log(`🔄 API health check: http://localhost:${PORT}/api/check`);
   console.log(`\n📝 Server initialization complete - ${new Date().toISOString()}\n`);
 });

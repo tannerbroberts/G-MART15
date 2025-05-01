@@ -1,0 +1,196 @@
+.smoke-break-page {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #1a1a1a;
+  color: #ffffff;
+  padding: 2rem;
+}
+
+.smoke-break-page.smoke-effect::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(128, 128, 128, 0.3);
+  backdrop-filter: blur(2px);
+  z-index: 1;
+}
+
+.smoke-break-page.smoke-effect::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><filter id="smoke"><feTurbulence type="fractalNoise" baseFrequency="0.01" numOctaves="5" seed="1"/><feDisplacementMap in="SourceGraphic" scale="10"/></filter><rect width="100" height="100" filter="url(%23smoke)" opacity="0.1"/></svg>');
+  opacity: 0.1;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.smoke-break-content {
+  position: relative;
+  z-index: 3;
+  background: rgba(0, 0, 0, 0.8);
+  padding: 2rem;
+  border-radius: 1rem;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+  max-width: 800px;
+  width: 100%;
+  text-align: center;
+}
+
+.smoke-break-title {
+  font-size: 2.5rem;
+  margin-bottom: 1.5rem;
+  color: #FF9800;
+  text-shadow: 0 0 10px rgba(255, 152, 0, 0.5);
+}
+
+.connection-status {
+  margin: 1rem 0;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  font-weight: bold;
+}
+
+.connection-status.connected {
+  background-color: rgba(76, 175, 80, 0.2);
+  color: #4CAF50;
+}
+
+.connection-status.disconnected {
+  background-color: rgba(244, 67, 54, 0.2);
+  color: #f44336;
+}
+
+.player-status {
+  margin: 1rem 0;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  font-weight: bold;
+}
+
+.player-status.active {
+  background-color: rgba(76, 175, 80, 0.2);
+  color: #4CAF50;
+}
+
+.player-status.smoke_break {
+  background-color: rgba(255, 152, 0, 0.2);
+  color: #FF9800;
+}
+
+.error-message {
+  background-color: rgba(244, 67, 54, 0.2);
+  color: #f44336;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  margin: 1rem 0;
+}
+
+.qr-container {
+  background: white;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  display: inline-block;
+  margin: 1.5rem 0;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+.smoke-break-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+.smoke-break-buttons button {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 150px;
+}
+
+.smoke-break-buttons button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.rejoin-btn {
+  background-color: #2196F3;
+  color: white;
+}
+
+.rejoin-btn:hover:not(:disabled) {
+  background-color: #0b7dda;
+}
+
+.smoke-break-btn {
+  background-color: #FF9800;
+  color: white;
+}
+
+.smoke-break-btn:hover:not(:disabled) {
+  background-color: #f57c00;
+}
+
+.smoke-break-btn.active {
+  background-color: #9E9E9E;
+}
+
+.share-btn {
+  background-color: #9C27B0;
+  color: white;
+}
+
+.share-btn:hover:not(:disabled) {
+  background-color: #7b1fa2;
+}
+
+.exit-btn {
+  background-color: #f44336;
+  color: white;
+}
+
+.exit-btn:hover:not(:disabled) {
+  background-color: #d32f2f;
+}
+
+.share-link-popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0, 0, 0, 0.9);
+  padding: 2rem;
+  border-radius: 1rem;
+  text-align: center;
+  z-index: 1000;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+}
+
+.share-link-popup button {
+  margin-top: 1rem;
+  padding: 0.5rem 1rem;
+  background-color: #2196F3;
+  color: white;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+}
+
+.share-link-popup button:hover {
+  background-color: #0b7dda;
+}

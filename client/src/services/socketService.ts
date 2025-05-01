@@ -45,6 +45,7 @@ class SocketService {
   private isConnecting = false;
   private currentTableId: string | null = null;
   private currentUserId: string | null = null;
+  private onStatusUpdate: ((playerId: string, status: PlayerStatus) => void) | null = null;
 
   connect(tableId: string, userId: string) {
     // If already connected to the same table and user, do nothing
@@ -103,7 +104,7 @@ class SocketService {
       }
     });
 
-    this.socket.on("disconnect", (reason) => {
+    this.socket.on("disconnect", (reason: Socket.DisconnectReason) => {
       console.log("Socket disconnected:", reason);
       if (reason === "io server disconnect") {
         // Server initiated disconnect, don't try to reconnect
@@ -131,8 +132,9 @@ class SocketService {
     if (!this.socket) return;
 
     this.socket.on("ping", () => {
-      console.log("Received ping from server");
+      console.log("Received ping from server at", new Date().toISOString());
       this.socket?.emit("pong");
+      console.log("Sent pong to server at", new Date().toISOString());
       this.missedPongs = 0;
     });
 
@@ -140,12 +142,10 @@ class SocketService {
       console.log("Game state updated:", state);
     });
 
-    this.socket.on(
-      "player_status_update",
-      (playerId: string, status: string) => {
-        console.log(`Player ${playerId} status updated to: ${status}`);
-      }
-    );
+    this.socket.on("player_status_update", (playerId: string, status: PlayerStatus) => {
+      console.log(`Player ${playerId} status updated to: ${status}`);
+      this.onStatusUpdate?.(playerId, status);
+    });
 
     this.socket.on("error", (error: any) => {
       console.error("Socket error:", error);
@@ -159,11 +159,13 @@ class SocketService {
 
     this.heartbeatInterval = setInterval(() => {
       if (!this.socket?.connected) {
+        console.log("Socket not connected, resetting missed pongs");
         this.missedPongs = 0;
         return;
       }
 
       this.missedPongs++;
+      console.log(`Missed pongs count: ${this.missedPongs}`);
       if (this.missedPongs >= 3) {
         console.error("Connection lost - too many missed pongs");
         this.disconnect();
@@ -220,6 +222,10 @@ class SocketService {
       this.socket?.emit("exit_game");
     }
     this.disconnect();
+  }
+
+  onPlayerStatusUpdate(callback: (playerId: string, status: PlayerStatus) => void) {
+    this.onStatusUpdate = callback;
   }
 }
 

@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { socketService } from "../services/socketService";
 
 type ConnectionStatus = "connected" | "disconnected" | "connecting";
+type PlayerStatus = "active" | "smoke_break" | "pending_game_start";
 
 interface GameLobbyProps {
   isHost: boolean;
@@ -25,6 +26,8 @@ const GameLobby: React.FC<GameLobbyProps> = ({
   const [connectionStatus, setConnectionStatus] =
     useState<ConnectionStatus>("disconnected");
   const [connectionError, setConnectionError] = useState<string | null>(null);
+  const [playerStatus, setPlayerStatus] = useState<PlayerStatus>("active");
+  const [showSmokeEffect, setShowSmokeEffect] = useState(false);
 
   const gameUrl = `${window.location.origin}/table/${tableId}`;
 
@@ -44,6 +47,19 @@ const GameLobby: React.FC<GameLobbyProps> = ({
 
     return () => clearInterval(interval);
   }, [checkConnection]);
+
+  useEffect(() => {
+    const handlePlayerStatusUpdate = (playerId: string, status: PlayerStatus) => {
+      setPlayerStatus(status);
+      setShowSmokeEffect(status === "smoke_break");
+    };
+
+    socketService.onPlayerStatusUpdate(handlePlayerStatusUpdate);
+
+    return () => {
+      socketService.onPlayerStatusUpdate(() => {});
+    };
+  }, []);
 
   const handleShare = useCallback(() => {
     setShowShareLink(true);
@@ -65,16 +81,26 @@ const GameLobby: React.FC<GameLobbyProps> = ({
       setConnectionError("Cannot rejoin: Not connected to server");
       return;
     }
+    socketService.requestRejoin();
     onRejoin?.();
   }, [connectionStatus, onRejoin]);
 
   const handleExit = useCallback(() => {
+    socketService.exitGame();
     onExit?.();
     navigate("/");
   }, [onExit, navigate]);
 
+  const handleSmokeBreak = useCallback(() => {
+    if (connectionStatus !== "connected") {
+      setConnectionError("Cannot request smoke break: Not connected to server");
+      return;
+    }
+    socketService.requestSmokeBreak();
+  }, [connectionStatus]);
+
   return (
-    <div className="game-lobby">
+    <div className={`game-lobby ${showSmokeEffect ? "smoke-effect" : ""}`}>
       {/* Add decorative card suits to the background */}
       <div className="card-suits">
         <span className="suit">♠</span>
@@ -93,6 +119,10 @@ const GameLobby: React.FC<GameLobbyProps> = ({
           {connectionStatus === "connected" ? "Connected" : "Disconnected"}
         </div>
 
+        <div className={`player-status ${playerStatus}`} role="status">
+          Status: {playerStatus === "smoke_break" ? "On Smoke Break" : "Active"}
+        </div>
+
         {connectionError && (
           <div className="error-message" role="alert">
             {connectionError}
@@ -109,9 +139,9 @@ const GameLobby: React.FC<GameLobbyProps> = ({
             value={gameUrl}
             size={200}
             level="H"
-            includeMargin={true}
             bgColor={"#FFFFFF"}
             fgColor={"#2c3e50"}
+            marginSize={2}
           />
         </div>
 
@@ -120,8 +150,8 @@ const GameLobby: React.FC<GameLobbyProps> = ({
             <button
               className="start-game-btn"
               onClick={handleStartGame}
-              disabled={connectionStatus !== "connected"}
-              aria-disabled={connectionStatus !== "connected"}
+              disabled={connectionStatus !== "connected" || playerStatus === "smoke_break"}
+              aria-disabled={connectionStatus !== "connected" || playerStatus === "smoke_break"}
             >
               Start Game
             </button>
@@ -130,18 +160,27 @@ const GameLobby: React.FC<GameLobbyProps> = ({
           <button
             className="rejoin-btn"
             onClick={handleRejoin}
-            disabled={connectionStatus !== "connected"}
-            aria-disabled={connectionStatus !== "connected"}
+            disabled={connectionStatus !== "connected" || playerStatus === "active"}
+            aria-disabled={connectionStatus !== "connected" || playerStatus === "active"}
           >
-            Rejoin Game
+            {playerStatus === "smoke_break" ? "Sit Down" : "Rejoin Game"}
+          </button>
+
+          <button
+            className={`smoke-break-btn ${playerStatus === "smoke_break" ? "active" : ""}`}
+            onClick={handleSmokeBreak}
+            disabled={connectionStatus !== "connected" || playerStatus === "smoke_break"}
+            aria-disabled={connectionStatus !== "connected" || playerStatus === "smoke_break"}
+          >
+            {playerStatus === "smoke_break" ? "On Smoke Break" : "Request Smoke Break"}
           </button>
 
           <button className="share-btn" onClick={handleShare}>
             Share Table
           </button>
 
-          <button className="exit-btn" onClick={handleExit}>
-            Exit Lobby
+          <button className="cash-out-btn" onClick={handleExit}>
+            Cash Out
           </button>
         </div>
 
