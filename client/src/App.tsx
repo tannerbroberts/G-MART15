@@ -1,7 +1,7 @@
 import './App.css'
 import React, { useState, useCallback } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import LoginPage from './loginpage';
+import LoginPage from './LoginPage';
 import CardSelector from './components/CardSelector';
 import CardTable from './components/CardTable';
 import PipPlacementGenerator from './components/PipPlacementGenerator';
@@ -11,9 +11,9 @@ import { PipPlacementMap } from './cardGenerator';
 import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import AuthCallback from './pages/AuthCallback';
-import MenuPage from './menupage';
-import JoinGamePage from './joingamepage';
-import UsernamePage from './usernamepage';
+import MenuPage from './Menupage';
+import JoinGamePage from './JoingamePage';
+import UsernamePage from './UsernamePage';
 
 const GameComponent: React.FC = () => {
   const [cards, setCards] = useState(initialCards);

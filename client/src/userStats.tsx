@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from 'react';
 
-function UserStats({ username, totalWinnings, gamesPlayed }) {
+export function UserStats({ username, totalWinnings, gamesPlayed }) {
     return (
       <div className="user-stats">
         <h1>Welcome, {username}!</h1>
