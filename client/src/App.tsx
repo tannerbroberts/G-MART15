@@ -1,8 +1,7 @@
 import './App.css'
 import React, { useState, useCallback } from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import './App.css';
-import LoginPage from './loginpage';
+import { BrowserRouter, Routes, Route, Navigate, Router } from 'react-router-dom';
+import LoginPage from './LoginPage';
 import CardSelector from './components/CardSelector';
 import CardTable from './components/CardTable';
 import PipPlacementGenerator from './components/PipPlacementGenerator';
@@ -16,14 +15,16 @@ import MusicControls from './components/MusicControls';
 import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import AuthCallback from './pages/AuthCallback';
-import MenuPage from './menupage';
-import JoinGamePage from './joingamepage';
-import UsernamePage from './usernamepage';
+import MenuPage from './Menupage';
+import JoinGamePage from './JoingamePage';
+import UsernamePage from './UsernamePage';
+import SmokeBreakPage from './components/SmokeBreakPage';
+import SmokeBreakTest from './components/SmokeBreakTest';
 
 const GameComponent: React.FC = () => {
   const [cards, setCards] = useState(initialCards);
   const [showPipGenerator, setShowPipGenerator] = useState(false);
-  
+
   // We'll store custom pip placements in localStorage for persistence
   const handleSavePipPlacements = useCallback((placements: PipPlacementMap) => {
     // Save to localStorage for persistence
@@ -37,10 +38,10 @@ const GameComponent: React.FC = () => {
     <>
     <div className="card-table">
       {/* Fixed top bar with controls */}
-      <div style={{ 
-        position: 'absolute', 
-        top: 24, 
-        right: 24, 
+      <div style={{
+        position: 'absolute',
+        top: 24,
+        right: 24,
         zIndex: 10,
         display: 'flex',
         flexDirection: 'column',
@@ -48,10 +49,10 @@ const GameComponent: React.FC = () => {
       }}>
         <div>
           <CardSelector />
-          <button 
+          <button
             onClick={() => setShowPipGenerator(!showPipGenerator)}
-            style={{ 
-              marginLeft: '10px', 
+            style={{
+              marginLeft: '10px',
               padding: '8px 12px',
               position: 'relative',
               zIndex: 20 // Higher z-index to keep button on top
@@ -61,15 +62,15 @@ const GameComponent: React.FC = () => {
           </button>
         </div>
       </div>
-      
+
       {/* Show Pip Generator in a fixed position below the buttons */}
       {showPipGenerator && (
-        <div style={{ 
+        <div style={{
           position: 'fixed',
           top: '100px', // Fixed position from top with enough space for buttons
           right: '24px',
           left: '24px',
-          backgroundColor: 'white', 
+          backgroundColor: 'white',
           border: '1px solid #ccc',
           borderRadius: '8px',
           boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
@@ -82,7 +83,7 @@ const GameComponent: React.FC = () => {
           <PipPlacementGenerator onSave={handleSavePipPlacements} />
         </div>
       )}
-      
+
       {/* Only show CardTable if pip generator is not visible */}
       {!showPipGenerator && (
         <CardTable cards={cards} onCardClick={onCardClick} />
@@ -122,7 +123,9 @@ const App: React.FC = () => {
                 <GameComponent />
               </ProtectedRoute>
             } />
-            <Route path="/" element={<Navigate to="/login" replace />} />
+            <Route path="/test" element={<SmokeBreakTest />} />
+            <Route path="/smoke-break/:tableId" element={<SmokeBreakPage />} />
+            <Route path="*" element={<Navigate to="/test" replace />} />
           </Routes>
         </div>
       </AuthProvider>

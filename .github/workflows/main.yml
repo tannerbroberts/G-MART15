@@ -1,21 +1,42 @@
-name: Deploy
+# G-MART15 Blackjack Client CI/CD Workflow
+# ------------------------------------------------------------------------------
+# This workflow automatically deploys the client application when code is pushed to main
+# The deployment includes:
+# - Checking out the code
+# - Installing dependencies
+# - Running tests
+# - Deploying frontend to Vercel
+
+name: CI/CD Pipeline
 
 on:
   push:
     branches:
-      - main # This workflow will be triggered on push to the main branch
+      - main  # Trigger on pushes to main branch
+
+# Environment variables available to all jobs
+env:
+  NODE_VERSION: '18'  # Explicitly set Node.js version
 
 jobs:
-  build:
+  deploy-frontend:
+    name: Deploy Frontend to Vercel
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: Install Heroku CLI # <- IMPORTANT!!! Make sure the cli is installed before using the action
-        run: |
-          curl https://cli-assets.heroku.com/install.sh | sh
-      - uses: akhileshns/heroku-deploy@v3.14.15 # This is the action
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
         with:
-          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
-          heroku_app_name: "gmart15-blackjack-express" #Must be unique in Heroku
-          heroku_email: "tannerbroberts@gmail.com"
-          appdir: "server" # <- This will point to the api folder in your project
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+      - name: Install dependencies
+        run: cd client && npm ci
+      - name: Deploy to Vercel
+        uses: amondnet/vercel-action@v20
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          vercel-args: '--prod'
+          working-directory: ./client

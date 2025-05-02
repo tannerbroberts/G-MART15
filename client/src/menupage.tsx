@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './loginpage.css';
 import fannedcards from './fannedcards.png';
+import { UserStats } from './UserStats';
 
 const MenuPage = () => {
     const navigate = useNavigate();
@@ -23,6 +24,11 @@ const MenuPage = () => {
       <>
         <div className="textcontainer">
           <h1>BLACKJACK</h1>
+          <UserStats
+        username="Loading..."
+        totalWinnings="—"
+        gamesPlayed="—"
+      />
         </div>
         <button 
             className="menubutton" 

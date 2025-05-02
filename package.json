@@ -1,27 +1,25 @@
 {
    "scripts": {
-      "client:dev": "cd client && npm run dev",
-      "client:build": "cd client && npm run build",
-      "server:dev": "cd server && npm run dev",
-      "server:watch": "cd server && npm run watch",
-      "start": "concurrently \"npm run client:dev\" \"npm run server:watch\"",
-      "build": "npm run client:build && npm run server:build",
-      "server:build": "cd server && npm run build",
-      "serve": "cd server && node dist/index.js",
-      "db:setup": "node ./scripts/setup-database.js",
-      "MaggieSays": "npm install && cd client && npm install && cd ../server && npm install",
-      "deploy:heroku": "git subtree push --prefix server heroku main",
-      "deploy:heroku:force": "git push heroku `git subtree split --prefix server main`:main --force"
+      "dev": "cd client && npm run dev",
+      "build": "cd client && npm install && npx vite build",
+      "MaggieSays": "npm install && cd client && npm install"
+   },
+   "engines": {
+      "node": "22.x",
+      "npm": "10.x"
    },
    "keywords": [],
    "author": "",
    "license": "ISC",
    "devDependencies": {
-      "@types/jsonwebtoken": "^9.0.9",
-      "concurrently": "^9.1.2"
+      "@types/jsonwebtoken": "^9.0.9"
    },
    "dependencies": {
+      "@types/express": "^5.0.1",
       "dotenv": "^16.5.0",
-      "pg": "^8.14.1"
+      "pg": "^8.14.1",
+      "react-router-dom": "^7.5.1",
+      "typescript": "^5.8.3",
+      "vite": "^6.2.0"
    }
 }
