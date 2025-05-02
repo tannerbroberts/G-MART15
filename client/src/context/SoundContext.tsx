@@ -4,11 +4,11 @@ import useBgm from '../components/useBgm.tsx';
 
 //THE SOURCES HERE ARE ALL TEMPORARY
 
-import backgroundMusicFile from '../assets/sound_assets/SAMPLE.mp3';
+import backgroundMusicFile from '../assets/sound_assets/TESTMUSIC1.flac';
 import dealCardSound from '../assets/sound_assets/PlaceholderButtonNoise.mp3';
-import chipSound from '../assets/sound_assets/PlaceholderButtonNoise.mp3';
-import winSound from '../assets/sound_assets/PlaceholderButtonNoise.mp3';
-import loseSound from '../assets/sound_assets/PlaceholderButtonNoise.mp3';
+import chipSound from '../assets/sound_assets/BetWhole.wav';
+import winSound from '../assets/sound_assets/GameWonTEMP.mp3';
+import loseSound from '../assets/sound_assets/GameOverTEMP.mp3';
 
 
 

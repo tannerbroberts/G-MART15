@@ -4,7 +4,7 @@ import useSound from 'use-sound';
 
 
 function useBgm (
-    musicUrl, initialVolume = 0.3
+    musicUrl='', initialVolume = 0.3
 ){
     const [isPlaying, setIsPlaying] = useState(false);
     const [volume, setVolume] = useState(initialVolume);
@@ -16,13 +16,14 @@ function useBgm (
     const toggleMusic = useCallback(()=> {
         if(isPlaying){
             stop();
+            setIsPlaying(false);
         }
         else {
             play();
             setIsPlaying(true);
         }
     }, [isPlaying, play, stop]);
-    const adjustVolume = useCallback((newVolume)=>{
+    const adjustVolume = useCallback((newVolume:number)=>{
         setVolume(newVolume);
         if (sound){
             sound.volume(newVolume)
