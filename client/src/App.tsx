@@ -8,6 +8,10 @@ import PipPlacementGenerator from './components/PipPlacementGenerator';
 import { initialCards } from './initialCards';
 import { handleCardClick } from './utils';
 import { PipPlacementMap } from './cardGenerator';
+//Sound and music handlers
+import { SoundProvider } from './context/SoundContext';
+import GameRouter from './router/GameRouter';
+import MusicControls from './components/MusicControls';
 import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import AuthCallback from './pages/AuthCallback';
@@ -31,6 +35,7 @@ const GameComponent: React.FC = () => {
   const onCardClick = (id: string) => setCards(cards => handleCardClick(cards, id));
 
   return (
+    <>
     <div className="card-table">
       {/* Fixed top bar with controls */}
       <div style={{
@@ -84,11 +89,14 @@ const GameComponent: React.FC = () => {
         <CardTable cards={cards} onCardClick={onCardClick} />
       )}
     </div>
+    <MusicControls />
+    </>
   );
 }
 
 const App: React.FC = () => {
   return (
+    <SoundProvider>
     <BrowserRouter>
       <AuthProvider>
         <div className='appcontainer'>
@@ -122,6 +130,7 @@ const App: React.FC = () => {
         </div>
       </AuthProvider>
     </BrowserRouter>
+    </SoundProvider>
   );
 }
 
